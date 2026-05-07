@@ -154,30 +154,8 @@
     </div>
 </div>
 
-<div class="footer">
-    © 2025 «Короче, научи» — платформа для обмена знаниями и навыками.
-</div>
-
-<script>
-    // небольшая интерактивность: кнопки показывают alert (заглушка, чтобы видеть, что навигация живая)
-    document.querySelectorAll('.nav-buttons .btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            if(btn.innerText.includes('Вход')) alert('🚪 Страница входа');
-            else alert('📝 Страница регистрации');
-        });
-    });
-
-    document.querySelector('.search-btn')?.addEventListener('click', () => {
-        const query = document.querySelector('.search-input').value;
-        if(query.trim()) alert(`🔍 Вы ищете: "${query}". Результаты поиска откроются в отдельной странице.`);
-        else alert('Введите, что нужно найти (например: "Python", "Figma")');
-    });
-
-    document.querySelector('.btn-large')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        alert('🔥 Переход к регистрации');
-    });
-</script>
+<footer class="footer">
+    © 2026 «Короче, научи» — платформа для обмена знаниями и навыками.
+</footer>
 </body>
 </html>

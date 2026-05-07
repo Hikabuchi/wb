@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация — SkillSwap</title>
+    <link rel="stylesheet" href="../styles/auth.css">
+</head>
+<body>
+
+<div class="register-container" id="registerContainer">
+    <div class="logo">Короче, научи</div>
+    <h2>Создать аккаунт</h2>
+    <div class="sub">Обменивайся навыками с профессионалами</div>
+
+    <!-- Блок с сообщением об успехе (рега прошла) -->
+    <div class="success-message" id="successMsg">Регистрация успешна! Заполните профиль ниже</div>
+
+    <!-- ШАГ 1: ФОРМА РЕГИСТРАЦИИ -->
+    <div id="registrationForm">
+        <div class="input-group">
+            <label>Email или телефон</label>
+            <input type="text" class="input-field" id="contactInput" placeholder="example@skillswap.ru или +7 999 123-45-67">
+        </div>
+        <div class="input-group">
+            <label>Пароль</label>
+            <input type="password" class="input-field" id="passwordInput" placeholder="Минимум 6 символов">
+        </div>
+        <div class="input-group">
+            <label>Повторите пароль</label>
+            <input type="password" class="input-field" id="confirmPasswordInput" placeholder="Введите пароль ещё раз">
+        </div>
+
+        <button class="btn-register" id="registerBtn">Продолжить →</button>
+        <div class="login-link">
+            Уже есть аккаунт? <a href="#" id="goToLogin">Войти</a>
+        </div>
+    </div>
+
+    <!-- ШАГ 2: ОНБОРДИНГ (заполнение профиля) -->
+    <div id="onboardingBlock" class="onboarding">
+        <div class="step-title">Заполните профиль, чтобы начать</div>
+
+        <div class="input-group">
+            <label>Как к вам обращаться?</label>
+            <input type="text" class="input-field" id="displayName" placeholder="Анна, Максим, Елена...">
+        </div>
+
+        <div class="input-group">
+            <label>Ваши навыки (чем делитесь)</label>
+            <div class="onboarding-grid" id="skillsGivenGrid">
+                <!-- динамические теги: выбор -->
+            </div>
+            <input type="text" class="input-onboard" id="customSkillGiven" placeholder="+ Добавить свой навык, например: Python, Figma">
+        </div>
+
+        <div class="input-group">
+            <label>Какие навыки хотите получить?</label>
+            <div class="onboarding-grid" id="skillsWantedGrid"></div>
+            <input type="text" class="input-onboard" id="customSkillWanted" placeholder="+ Чему хотите научиться?">
+        </div>
+
+        <button class="btn-save-profile" id="completeProfileBtn">🚀 Завершить регистрацию</button>
+        <p style="font-size: 12px; color:#64748B; margin-top: 16px; text-align: center;">*После сохранения вы попадете в личный кабинет</p>
+    </div>
+</div>
+
+<script>
+    // Предустановленные теги для выбора (навыки)
+    const presetSkillsGive = ["Python", "JavaScript", "Figma", "UI/UX", "SMM", "Английский", "Фотография", "Маркетинг"];
+    const presetSkillsWant = ["Дизайн", "React", "Data Science", "Испанский", "Видеомонтаж", "Копирайтинг", "Таргет", "Blender"];
+
+    let selectedGivenSkills = [];
+    let selectedWantedSkills = [];
+
+    // Рендер сетки навыков "чем делюсь"
+    function renderGivenSkills() {
+        const container = document.getElementById('skillsGivenGrid');
+        if (!container) return;
+        container.innerHTML = '';
+        presetSkillsGive.forEach(skill => {
+            const isSelected = selectedGivenSkills.includes(skill);
+            const chip = document.createElement('span');
+            chip.className = `skill-badge ${isSelected ? 'selected' : ''}`;
+            chip.textContent = skill;
+            chip.addEventListener('click', () => {
+                if (selectedGivenSkills.includes(skill)) {
+                    selectedGivenSkills = selectedGivenSkills.filter(s => s !== skill);
+                } else {
+                    selectedGivenSkills.push(skill);
+                }
+                renderGivenSkills();
+                renderWantedSkills(); // не обязательно, но пусть перерисуем оба для единообразия
+            });
+            container.appendChild(chip);
+        });
+        // Добавляем кастомный ввод обрабатывается отдельно
+    }
+
+    function renderWantedSkills() {
+        const container = document.getElementById('skillsWantedGrid');
+        if (!container) return;
+        container.innerHTML = '';
+        presetSkillsWant.forEach(skill => {
+            const isSelected = selectedWantedSkills.includes(skill);
+            const chip = document.createElement('span');
+            chip.className = `skill-badge ${isSelected ? 'selected' : ''}`;
+            chip.textContent = skill;
+            chip.addEventListener('click', () => {
+                if (selectedWantedSkills.includes(skill)) {
+                    selectedWantedSkills = selectedWantedSkills.filter(s => s !== skill);
+                } else {
+                    selectedWantedSkills.push(skill);
+                }
+                renderWantedSkills();
+            });
+            container.appendChild(chip);
+        });
+    }
+
+    // Добавление кастомного навыка
+    const customGivenInput = document.getElementById('customSkillGiven');
+    const customWantedInput = document.getElementById('customSkillWanted');
+
+    function addCustomGiven() {
+        const val = customGivenInput.value.trim();
+        if (val && !selectedGivenSkills.includes(val)) {
+            selectedGivenSkills.push(val);
+            renderGivenSkills();
+            customGivenInput.value = '';
+        }
+    }
+
+    function addCustomWanted() {
+        const val = customWantedInput.value.trim();
+        if (val && !selectedWantedSkills.includes(val)) {
+            selectedWantedSkills.push(val);
+            renderWantedSkills();
+            customWantedInput.value = '';
+        }
+    }
+
+    customGivenInput?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addCustomGiven();
+    });
+    customWantedInput?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') addCustomWanted();
+    });
+
+    // Логика регистрации: валидация и переход к онбордингу
+    document.getElementById('registerBtn')?.addEventListener('click', () => {
+        const contact = document.getElementById('contactInput').value.trim();
+        const pwd = document.getElementById('passwordInput').value;
+        const confirmPwd = document.getElementById('confirmPasswordInput').value;
+
+        if (!contact) {
+            alert('Введите email или телефон');
+            return;
+        }
+        if (pwd.length < 6) {
+            alert('Пароль должен быть минимум 6 символов');
+            return;
+        }
+        if (pwd !== confirmPwd) {
+            alert('Пароли не совпадают');
+            return;
+        }
+
+        // эмуляция сохранения данных пользователя (можно в localStorage)
+        const user = { contact: contact, password: pwd };
+        localStorage.setItem('tempUser', JSON.stringify(user));
+
+        // Прячем форму регистрации, показываем онбординг
+        document.getElementById('registrationForm').style.display = 'none';
+        document.getElementById('onboardingBlock').classList.add('active');
+        document.getElementById('successMsg').style.display = 'block';
+
+        // Инициализируем сетки навыков
+        renderGivenSkills();
+        renderWantedSkills();
+    });
+
+    // Завершение регистрации + сохранение профиля
+    document.getElementById('completeProfileBtn')?.addEventListener('click', () => {
+        const displayName = document.getElementById('displayName').value.trim();
+        if (!displayName) {
+            alert('Пожалуйста, укажите ваше имя');
+            return;
+        }
+
+        const finalProfile = {
+            name: displayName,
+            skillsGive: selectedGivenSkills,
+            skillsWant: selectedWantedSkills,
+            registeredAt: new Date().toISOString()
+        };
+        localStorage.setItem('userProfile', JSON.stringify(finalProfile));
+        alert(`🎉 Добро пожаловать, ${displayName}!\nВаши навыки: ${selectedGivenSkills.join(', ') || 'пока нет'}\nЦели: ${selectedWantedSkills.join(', ') || 'пока нет'}\nПереходим в личный кабинет.`);
+        
+        // Редирект на личный кабинет (можно заменить на ссылку, но сейчас имитируем)
+        window.location.href = 'cabinet.html';  // в будущем файл, сейчас просто заглушка
+        // если cabinet.html нет, браузер выдаст ошибку, но мы сделаем элегантнее
+        setTimeout(() => {
+            if (!window.location.href.includes('cabinet.html')) {
+                alert('Страница личного кабинета будет доступна в отдельном файле (cabinet.html)');
+            }
+        }, 100);
+    });
+
+    // заглушка на вход
+    document.getElementById('goToLogin')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('Страница авторизации будет в отдельном файле login.html');
+    });
+
+    // если уже был незавершенный онбординг (можно почистить)
+    if (localStorage.getItem('userProfile')) {
+        // не мешаем, но и не авто-переходим
+    }
+</script>
+</body>
+</html>

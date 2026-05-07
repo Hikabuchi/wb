@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация</title>
+    <link rel="stylesheet" href="../styles/auth.css">
+</head>
+<body>
+
+<div class="login-container">
+    <div class="logo">Короче, научи</div>
+    <h2>Добро пожаловать</h2>
+    <div class="sub">Войдите, чтобы продолжить обмен навыками</div>
+
+    <!-- Блок с ошибкой -->
+    <div class="error-message" id="errorMsg">
+        Неверный email/телефон или пароль
+    </div>
+
+    <!-- Форма авторизации -->
+    <div id="loginForm">
+        <div class="input-group">
+            <label>📧 Email или телефон</label>
+            <input type="text" class="input-field" id="loginContact" placeholder="example@skillswap.ru или +7 999 123-45-67">
+        </div>
+        <div class="input-group">
+            <label>Пароль</label>
+            <input type="password" class="input-field" id="loginPassword" placeholder="Введите пароль">
+        </div>
+
+        <div class="options-row">
+            <label class="checkbox-label">
+                <input type="checkbox" id="rememberMe"> Запомнить меня
+            </label>
+            <a href="#" class="forgot-link" id="forgotPassword">Забыли пароль?</a>
+        </div>
+
+        <button class="btn-login" id="loginBtn">Войти →</button>
+
+        <div class="divider">
+            <span>или</span>
+        </div>
+
+        <div class="register-link">
+            Нет аккаунта? <a href="register.html" id="goToRegister">Зарегистрироваться</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Функция для получения зарегистрированного пользователя
+    // Эмулируем проверку: ищем в localStorage данные, сохранённые при регистрации
+    function getRegisteredUser() {
+        const tempUser = localStorage.getItem('tempUser');
+        const userProfile = localStorage.getItem('userProfile');
+        
+        // Если есть профиль (завершённая регистрация) — используем его данные
+        if (userProfile) {
+            try {
+                const profile = JSON.parse(userProfile);
+                // Ищем, с каким контактом регистрировался пользователь
+                const temp = localStorage.getItem('tempUser');
+                if (temp) {
+                    const tempData = JSON.parse(temp);
+                    return { contact: tempData.contact, password: tempData.password };
+                }
+            } catch(e) {}
+        }
+        
+        // Проверяем tempUser напрямую
+        const tempUserData = localStorage.getItem('tempUser');
+        if (tempUserData) {
+            try {
+                return JSON.parse(tempUserData);
+            } catch(e) {}
+        }
+        return null;
+    }
+
+    // Логика входа
+    document.getElementById('loginBtn')?.addEventListener('click', () => {
+        const contact = document.getElementById('loginContact').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const errorBlock = document.getElementById('errorMsg');
+        
+        if (!contact || !password) {
+            errorBlock.textContent = '⚠️ Заполните все поля';
+            errorBlock.classList.add('error-show');
+            setTimeout(() => errorBlock.classList.remove('error-show'), 2500);
+            return;
+        }
+        
+        const registeredUser = getRegisteredUser();
+        
+        if (registeredUser && registeredUser.contact === contact && registeredUser.password === password) {
+            // Успешный вход
+            const remember = document.getElementById('rememberMe').checked;
+            if (remember) {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('loggedInUser', contact);
+            } else {
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('loggedInUser', contact);
+            }
+            
+            alert(`✅ Добро пожаловать обратно, ${contact}!`);
+            // Перенаправление в личный кабинет
+            window.location.href = 'cabinet.html';
+        } else {
+            errorBlock.textContent = '❌ Неверный email/телефон или пароль. Попробуйте снова.';
+            errorBlock.classList.add('error-show');
+            setTimeout(() => errorBlock.classList.remove('error-show'), 3000);
+        }
+    });
+    
+    // Вход через Telegram (демо)
+    document.getElementById('telegramLoginBtn')?.addEventListener('click', () => {
+        alert('📱 Интеграция с Telegram: после авторизации вы сможете быстро входить. Функция будет полностью доступна в ближайшее время.');
+        // Здесь мог бы быть OAuth Telegram
+    });
+    
+    // Восстановление пароля
+    document.getElementById('forgotPassword')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('📧 Инструкции по восстановлению пароля отправлены на почту (демо-режим).');
+    });
+    
+    // Автозаполнение, если есть запомненные данные
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+        const savedContact = localStorage.getItem('loggedInUser');
+        if (savedContact && document.getElementById('loginContact')) {
+            document.getElementById('loginContact').value = savedContact;
+            document.getElementById('rememberMe').checked = true;
+        }
+    }
+    
+    // Анимация и эмуляция — если пользователь уже вошёл ранее, предложим войти заново по кнопке
+    // Сброс ошибки при вводе
+    const inputs = [document.getElementById('loginContact'), document.getElementById('loginPassword')];
+    inputs.forEach(input => {
+        input?.addEventListener('input', () => {
+            document.getElementById('errorMsg')?.classList.remove('error-show');
+        });
+    });
+    
+    // Демо-данные для тестирования (если нет зарегистрированного пользователя)
+    // Автоматически создаём тестового пользователя для удобства демо
+    (function createDemoUserIfNeeded() {
+        if (!localStorage.getItem('tempUser') && !localStorage.getItem('userProfile')) {
+            // Создаём демо-пользователя для теста
+            const demoUser = {
+                contact: 'demo@skillswap.ru',
+                password: '123456'
+            };
+            localStorage.setItem('tempUser', JSON.stringify(demoUser));
+            const demoProfile = {
+                name: 'Демо Пользователь',
+                skillsGive: ['Python', 'Figma'],
+                skillsWant: ['Английский', 'Маркетинг']
+            };
+            localStorage.setItem('userProfile', JSON.stringify(demoProfile));
+            console.log('Демо-пользователь создан: demo@skillswap.ru / 123456');
+        }
+    })();
+</script>
+</body>
+</html>

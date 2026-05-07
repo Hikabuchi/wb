@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Kit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #0F172A;
+            color: #F1F5F9;
+            line-height: 1.5;
+            padding: 48px 24px;
+        }
+
+        /* ========== КОНТЕЙНЕР ========== */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ========== ЗАГОЛОВКИ UI KIT ========== */
+        .kit-header {
+            margin-bottom: 48px;
+            text-align: center;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 32px;
+        }
+
+        .kit-header h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #7C3AED, #06B6D4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .kit-header p {
+            color: #94A3B8;
+            font-size: 1.1rem;
+        }
+
+        .section {
+            margin-bottom: 64px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 24px;
+            padding-left: 16px;
+            border-left: 4px solid #7C3AED;
+        }
+
+        .subsection-title {
+            font-size: 1.2rem;
+            color: #06B6D4;
+            margin: 24px 0 16px 0;
+            font-weight: 500;
+        }
+
+        .component-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 32px;
+            align-items: flex-start;
+            background: #1E293B;
+            border-radius: 24px;
+            padding: 32px;
+            border: 1px solid #334155;
+        }
+
+        .component-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .component-label {
+            font-size: 0.75rem;
+            color: #64748B;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        hr {
+            border-color: #334155;
+            margin: 40px 0;
+        }
+
+        /* ========== ЦВЕТОВАЯ ПАЛИТРА ========== */
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 24px;
+        }
+
+        .color-card {
+            background: #1E293B;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+
+        .color-preview {
+            height: 100px;
+        }
+
+        .color-info {
+            padding: 16px;
+        }
+
+        .color-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .color-hex {
+            font-size: 0.8rem;
+            color: #94A3B8;
+            font-family: monospace;
+        }
+
+        /* ========== ТИПОГРАФИКА ========== */
+        .typography-demo {
+            padding: 24px;
+            background: #1E293B;
+            border-radius: 24px;
+        }
+
+        .typography-demo h1,
+        .typography-demo h2,
+        .typography-demo h3,
+        .typography-demo p,
+        .typography-demo small {
+            margin-bottom: 16px;
+        }
+
+        /* ========== КНОПКИ ========== */
+        .btn {
+            display: inline-block;
+            padding: 10px 24px;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-family: inherit;
+            text-decoration: none;
+        }
+
+        .btn-sm {
+            padding: 6px 16px;
+            font-size: 0.75rem;
+        }
+
+        .btn-lg {
+            padding: 14px 32px;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: #7C3AED;
+            color: white;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #6c2bd9;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #7C3AED;
+            color: #F1F5F9;
+        }
+
+        .btn-outline:hover {
+            background: #7C3AED20;
+            border-color: #06B6D4;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #94A3B8;
+        }
+
+        .btn-ghost:hover {
+            color: #7C3AED;
+            background: #1E293B;
+        }
+
+        .btn-danger {
+            background: #EF4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-block {
+            width: 100%;
+            text-align: center;
+        }
+
+        /* ========== ПОЛЯ ВВОДА ========== */
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #CBD5E1;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            background: #0F172A;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            color: white;
+            transition: all 0.2s;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .input-field:focus {
+            border-color: #7C3AED;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+        }
+
+        .input-field::placeholder {
+            color: #64748B;
+        }
+
+        .input-error {
+            border-color: #EF4444;
+        }
+
+        .input-error:focus {
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+        }
+
+        .error-text {
+            color: #F87171;
+            font-size: 0.75rem;
+            margin-top: 6px;
+        }
+
+        /* ========== КАРТОЧКИ ========== */
+        .card {
+            background: #1E293B;
+            border-radius: 24px;
+            border: 1px solid #334155;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .card:hover {
+            border-color: #7C3AED;
+            transform: translateY(-4px);
+        }
+
+        .card-header {
+            padding: 20px 20px 0 20px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-footer {
+            padding: 16px 20px;
+            border-top: 1px solid #334155;
+            background: #0F172A;
+        }
+
+        /* ========== ТЕГИ / БЭДЖИ ========== */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .badge-primary {
+            background: #7C3AED20;
+            color: #7C3AED;
+            border: 1px solid #7C3AED40;
+        }
+
+        .badge-success {
+            background: #10B98120;
+            color: #10B981;
+            border: 1px solid #10B98140;
+        }
+
+        .badge-warning {
+            background: #F59E0B20;
+            color: #F59E0B;
+            border: 1px solid #F59E0B40;
+        }
+
+        .badge-danger {
+            background: #EF444420;
+            color: #EF4444;
+            border: 1px solid #EF444440;
+        }
+
+        .badge-info {
+            background: #06B6D420;
+            color: #06B6D4;
+            border: 1px solid #06B6D440;
+        }
+
+        /* ========== СКИЛЛ-ТЕГИ ========== */
+        .skill-tag {
+            display: inline-block;
+            background: #0F172A;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border-left: 2px solid #7C3AED;
+            margin: 4px;
+        }
+
+        /* ========== АВАТАРЫ ========== */
+        .avatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 600;
+        }
+
+        .avatar-sm {
+            width: 32px;
+            height: 32px;
+            font-size: 0.8rem;
+        }
+
+        .avatar-md {
+            width: 48px;
+            height: 48px;
+            font-size: 1rem;
+        }
+
+        .avatar-lg {
+            width: 64px;
+            height: 64px;
+            font-size: 1.5rem;
+        }
+
+        .avatar-default {
+            background: linear-gradient(145deg, #7C3AED, #4c1d95);
+            color: white;
+        }
+
+        /* ========== АЛАРТЫ ========== */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-success {
+            background: #10B98120;
+            border: 1px solid #10B981;
+            color: #10B981;
+        }
+
+        .alert-error {
+            background: #EF444420;
+            border: 1px solid #EF4444;
+            color: #F87171;
+        }
+
+        .alert-info {
+            background: #06B6D420;
+            border: 1px solid #06B6D4;
+            color: #06B6D4;
+        }
+
+        .alert-warning {
+            background: #F59E0B20;
+            border: 1px solid #F59E0B;
+            color: #FBE89A;
+        }
+
+        /* ========== НАВИГАЦИЯ ========== */
+        .navbar-demo {
+            background: #1E293B;
+            padding: 16px 24px;
+            border-radius: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            color: #94A3B8;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #7C3AED;
+        }
+
+        /* ========== ТАБЫ ========== */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            border-bottom: 1px solid #334155;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            color: #94A3B8;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: #7C3AED;
+            border-bottom: 2px solid #7C3AED;
+        }
+
+        /* ========== ЧЕКБОКС / РАДИО ========== */
+        .checkbox,
+        .radio {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #CBD5E1;
+        }
+
+        .checkbox input,
+        .radio input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #7C3AED;
+        }
+
+        /* ========== ПАГИНАЦИЯ ========== */
+        .pagination {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .page-link {
+            padding: 8px 14px;
+            background: #1E293B;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            color: #94A3B8;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .page-link:hover,
+        .page-link.active {
+            background: #7C3AED;
+            border-color: #7C3AED;
+            color: white;
+        }
+
+        /* ========== ПРОГРЕСС-БАР ========== */
+        .progress {
+            background: #334155;
+            border-radius: 9999px;
+            overflow: hidden;
+            height: 8px;
+        }
+
+        .progress-bar {
+            background: #7C3AED;
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.3s;
+        }
+
+        /* ========== МОДАЛЬНЫЙ ТРИГГЕР (демо) ========== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: #1E293B;
+            border-radius: 32px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid #334155;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #334155;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* ========== ДЛЯ КОПИРОВАНИЯ ========== */
+        .code-sample {
+            background: #0F172A;
+            padding: 12px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #06B6D4;
+            margin-top: 8px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- ========== 1. ЦВЕТА ========== -->
+    <div class="section">
+        <h2 class="section-title">Цветовая палитра</h2>
+        <div class="color-palette">
+            <div class="color-card">
+                <div class="color-preview" style="background: #7C3AED;"></div>
+                <div class="color-info">
+                    <div class="color-name">Primary / Фиолетовый</div>
+                    <div class="color-hex">#7C3AED</div>
+                </div>
+            </div>
+            <div class="color-card">
+                <div class="color-preview" style="background: #0F172A;"></div>
+                <div class="color-info">
+                    <div class="color-name">Dark / Фон</div>
+                    <div class="color-hex">#0F172A</div>
+                </div>
+            </div>
+            <div class="color-card">
+                <div class="color-preview" style="background: #06B6D4;"></div>
+                <div class="color-info">
+                    <div class="color-name">Accent / Бирюзовый</div>
+                    <div class="color-hex">#06B6D4</div>
+                </div>
+            </div>
+            <div class="color-card">
+                <div class="color-preview" style="background: #1E293B;"></div>
+                <div class="color-info">
+                    <div class="color-name">Surface</div>
+                    <div class="color-hex">#1E293B</div>
+                </div>
+            </div>
+            <div class="color-card">
+                <div class="color-preview" style="background: #F1F5F9;"></div>
+                <div class="color-info">
+                    <div class="color-name">Text Light</div>
+                    <div class="color-hex">#F1F5F9</div>
+                </div>
+            </div>
+            <div class="color-card">
+                <div class="color-preview" style="background: #94A3B8;"></div>
+                <div class="color-info">
+                    <div class="color-name">Text Gray</div>
+                    <div class="color-hex">#94A3B8</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 2. ТИПОГРАФИКА ========== -->
+    <div class="section">
+        <h2 class="section-title">Типографика</h2>
+        <div class="typography-demo">
+            <h1>H1. Заголовок 1 — 3.5rem</h1>
+            <h2>H2. Заголовок 2 — 2rem</h2>
+            <h3>H3. Заголовок 3 — 1.5rem</h3>
+            <p>Основной текст (body) — 1rem / 1.5. Используется для параграфов, описаний и контента.</p>
+            <small>Small text — 0.75rem для дополнительной информации, меток, подписей.</small>
+            <p><span class="text-gradient" style="background: linear-gradient(135deg, #7C3AED, #06B6D4); -webkit-background-clip: text; background-clip: text; color: transparent;">Градиентный текст</span> для акцентов</p>
+        </div>
+    </div>
+
+    <!-- ========== 3. КНОПКИ ========== -->
+    <div class="section">
+        <h2 class="section-title">Кнопки</h2>
+        <div class="component-grid">
+            <div class="component-item">
+                <div class="component-label">Primary</div>
+                <button class="btn btn-primary">Кнопка</button>
+                <div class="code-sample">class="btn btn-primary"</div>
+            </div>
+            <div class="component-item">
+                <div class="component-label">Outline</div>
+                <button class="btn btn-outline">Outline</button>
+                <div class="code-sample">class="btn btn-outline"</div>
+            </div>
+            <div class="component-item">
+                <div class="component-label">Ghost</div>
+                <button class="btn btn-ghost">Ghost</button>
+            </div>
+            <div class="component-item">
+                <div class="component-label">Danger</div>
+                <button class="btn btn-danger">Удалить</button>
+            </div>
+        </div>
+        <div class="subsection-title">Размеры</div>
+        <div class="component-grid">
+            <div class="component-item"><button class="btn btn-primary btn-sm">Small</button></div>
+            <div class="component-item"><button class="btn btn-primary">Medium</button></div>
+            <div class="component-item"><button class="btn btn-primary btn-lg">Large</button></div>
+            <div class="component-item"><button class="btn btn-primary btn-block">Block full width</button></div>
+        </div>
+    </div>
+
+    <!-- ========== 4. ПОЛЯ ВВОДА ========== -->
+    <div class="section">
+        <h2 class="section-title">Формы / Inputs</h2>
+        <div class="component-grid">
+            <div class="component-item">
+                <div class="input-group">
+                    <label class="input-label">Email</label>
+                    <input type="email" class="input-field" placeholder="user@example.com">
+                </div>
+            </div>
+            <div class="component-item">
+                <div class="input-group">
+                    <label class="input-label">Пароль</label>
+                    <input type="password" class="input-field" placeholder="••••••">
+                </div>
+            </div>
+            <div class="component-item">
+                <div class="input-group">
+                    <label class="input-label">С ошибкой</label>
+                    <input type="text" class="input-field input-error" value="неверные данные">
+                    <div class="error-text">Поле обязательно для заполнения</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 5. БЭДЖИ И ТЕГИ ========== -->
+    <div class="section">
+        <h2 class="section-title">Бэйджы / Теги навыков</h2>
+        <div class="component-grid">
+            <div class="component-item"><span class="badge badge-primary">Primary</span></div>
+            <div class="component-item"><span class="badge badge-success">Success</span></div>
+            <div class="component-item"><span class="badge badge-warning">Warning</span></div>
+            <div class="component-item"><span class="badge badge-danger">Danger</span></div>
+            <div class="component-item"><span class="badge badge-info">Info</span></div>
+        </div>
+        
+    </div>
+
+    <!-- ========== 6. КАРТОЧКИ ========== -->
+    <div class="section">
+        <h2 class="section-title">Карточки</h2>
+        <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+            <div class="card" style="width: 280px;">
+                <div class="card-header">
+                    <h3>Иван Петров</h3>
+                    <span class="badge badge-success">Active</span>
+                </div>
+                <div class="card-body">
+                    <p>Python разработчик, 5 лет опыта. Обменяю на уроки английского.</p>
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">Django</span>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary btn-sm">Предложить обмен</button>
+                </div>
+            </div>
+            <div class="card" style="width: 280px;">
+                <div class="card-header">
+                    <h3>Анна Смирнова</h3>
+                </div>
+                <div class="card-body">
+                    <p>UI/UX дизайнер. Ищу ментора по React.</p>
+                    <span class="skill-tag">Figma</span>
+                    <span class="skill-tag">UI/UX</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 7. АВАТАРЫ ========== -->
+    <div class="section">
+        <h2 class="section-title">Аватары</h2>
+        <div style="display: flex; gap: 20px; align-items: center;">
+            <div class="avatar avatar-sm avatar-default">А</div>
+            <div class="avatar avatar-md avatar-default">М</div>
+            <div class="avatar avatar-lg avatar-default">Е</div>
+        </div>
+    </div>
+
+    <!-- ========== 8. АЛАРТЫ ========== -->
+    <div class="section">
+        <h2 class="section-title">Уведомления / Alerts</h2>
+        <div class="alert alert-success">Обмен успешно завершён!</div>
+        <div class="alert alert-error">Ошибка при создании запроса</div>
+        <div class="alert alert-info">ℹНовое сообщение от пользователя</div>
+        <div class="alert alert-warning">Заполните профиль полностью</div>
+    </div>
+
+    <!-- ========== 10. ТАБЫ ========== -->
+    <div class="section">
+        <h2 class="section-title">Табы</h2>
+        <div class="tabs">
+            <button class="tab active">Входящие</button>
+            <button class="tab">Исходящие</button>
+            <button class="tab">Архив</button>
+        </div>
+    </div>
+
+    <!-- ========== 11. ЧЕКБОКС / РАДИО ========== -->
+    <div class="section">
+        <h2 class="section-title">Чекбоксы и радио</h2>
+        <div style="display: flex; gap: 24px;">
+            <label class="checkbox"><input type="checkbox"> Запомнить меня</label>
+            <label class="radio"><input type="radio" name="demo"> Опция 1</label>
+            <label class="radio"><input type="radio" name="demo"> Опция 2</label>
+        </div>
+    </div>
+
+    <!-- ========== 12. ПАГИНАЦИЯ ========== -->
+    <div class="section">
+        <h2 class="section-title">Пагинация</h2>
+        <div class="pagination">
+            <a href="#" class="page-link">←</a>
+            <a href="#" class="page-link active">1</a>
+            <a href="#" class="page-link">2</a>
+            <a href="#" class="page-link">3</a>
+            <a href="#" class="page-link">4</a>
+            <a href="#" class="page-link">→</a>
+        </div>
+    </div>
+
+    <!-- ========== 14. МОДАЛЬНОЕ ОКНО (демо-триггер) ========== -->
+    <div class="section">
+        <h2 class="section-title">Модальное окно</h2>
+        <button class="btn btn-primary" id="openModalBtn">Открыть модалку</button>
+    </div>
+</div>
+
+<!-- Модальное окно -->
+<div id="demoModal" class="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Заголовок модалки</h3>
+            <button id="closeModalBtn" style="background: none; border: none; color: #94A3B8; font-size: 1.5rem; cursor: pointer;">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>пу пу пу
+            <input type="text" class="input-field" placeholder="Введите данные" style="margin-top: 16px;">
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" id="modalCancel">Отмена</button>
+            <button class="btn btn-primary">Подтвердить</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const modal = document.getElementById('demoModal');
+    const openBtn = document.getElementById('openModalBtn');
+    const closeBtn = document.getElementById('closeModalBtn');
+    const cancelBtn = document.getElementById('modalCancel');
+
+    openBtn?.addEventListener('click', () => {
+        if(modal) modal.style.display = 'flex';
+    });
+    
+    const closeModal = () => {
+        if(modal) modal.style.display = 'none';
+    };
+    
+    closeBtn?.addEventListener('click', closeModal);
+    cancelBtn?.addEventListener('click', closeModal);
+    modal?.addEventListener('click', (e) => {
+        if(e.target === modal) closeModal();
+    });
+</script>
+</body>
+</html>
