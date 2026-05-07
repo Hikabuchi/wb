@@ -1,0 +1,181 @@
+:root {
+    /* Основные цвета */
+    --bg-primary: #0F172A;
+    --bg-secondary: #1E293B;
+    --bg-card: #1E293B;
+    --bg-hover: #2D3A5E;
+    --bg-dark: #0F172A;
+    
+    /* Цвета текста */
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+    --text-dark: #94A3B8;
+    
+    /* Акцентные цвета */
+    --accent-purple: #7C3AED;
+    --accent-purple-dark: #6c2bd9;
+    --accent-purple-deep: #4c1d95;
+    --accent-cyan: #06B6D4;
+    --accent-cyan-light: #06B6D420;
+    
+    /* Цвета границ */
+    --border-light: #1E293B;
+    --border-medium: #334155;
+    --border-card: #334155;
+    --border-divider: #2D3A5E;
+    
+    /* Цвета кнопок */
+    --btn-primary-bg: #7C3AED;
+    --btn-primary-hover: #6c2bd9;
+    --btn-outline-border: #7C3AED;
+    --btn-outline-hover-bg: #7C3AED20;
+    --btn-outline-hover-border: #06B6D4;
+    
+    /* Цвета градиентов */
+    --gradient-primary: linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%);
+    --gradient-avatar: linear-gradient(145deg, #7C3AED, #4c1d95);
+    --gradient-logo: linear-gradient(135deg, #7C3AED, #06B6D4);
+    
+    /* Цвета теней */
+    --shadow-primary: 0 4px 12px rgba(124, 58, 237, 0.3);
+    --shadow-primary-hover: 0 8px 20px rgba(124, 58, 237, 0.4);
+    --shadow-card: 0 20px 30px -12px rgba(0,0,0,0.5);
+    
+    /* Цвета статусов */
+    --badge-bg: #06B6D420;
+    --badge-color: #06B6D4;
+    
+    /* Цвета для rule-item */
+    --rule-border: #7C3AED;
+    
+    /* Цвет placeholder */
+    --placeholder-color: #64748B;
+    
+    /* Фокус */
+    --focus-shadow: #7C3AED40;
+}
+
+/* ========== RESET & GLOBAL ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+/* Класс для ограничения контейнера */
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* ========== TYPOGRAPHY & LINKS ========== */
+h1, h2, h3 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    font-size: 3.5rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* ========== BUTTONS ========== */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 9999px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    font-size: 0.9rem;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--btn-outline-border);
+    color: var(--text-primary);
+}
+
+.btn-outline:hover {
+    background: var(--btn-outline-hover-bg);
+    border-color: var(--btn-outline-hover-border);
+}
+
+.btn-primary {
+    background: var(--btn-primary-bg);
+    color: white;
+    box-shadow: var(--shadow-primary);
+}
+
+.btn-primary:hover {
+    background: var(--btn-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-primary-hover);
+}
+
+.btn-large {
+    padding: 14px 32px;
+    font-size: 1rem;
+}
+
+/*
+/* ========== АДАПТИВ ========== */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.2rem;
+    }
+    
+    .hero {
+        padding: 40px 0 30px;
+    }
+    
+    .search-container {
+        flex-direction: column;
+        border-radius: 32px;
+    }
+    
+    .search-btn {
+        padding: 14px;
+    }
+    
+    .navbar {
+        flex-direction: column;
+    }
+    
+    .two-column-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .info-section {
+        padding: 32px 24px;
+    }
+}
