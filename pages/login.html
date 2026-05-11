@@ -9,7 +9,7 @@
 <body>
 
 <div class="login-container">
-    <div class="logo">Короче, научи</div>
+    <div class="logo"><img src="icons/logo.png" alt="верно" width="25px" height="25px">Короче, научи</div>
     <h2>Добро пожаловать</h2>
     <div class="sub">Войдите, чтобы продолжить обмен навыками</div>
 
@@ -85,7 +85,7 @@
         const errorBlock = document.getElementById('errorMsg');
         
         if (!contact || !password) {
-            errorBlock.textContent = '<img src="icons/warning.png" alt="предупреждение" width="10px" height="10px"> Заполните все поля';
+            errorBlock.textContent = <img src="icons/warning.png" alt="предупреждение" width="10px" height="10px">'Заполните все поля';
             errorBlock.classList.add('error-show');
             setTimeout(() => errorBlock.classList.remove('error-show'), 2500);
             return;
@@ -104,26 +104,19 @@
                 sessionStorage.setItem('loggedInUser', contact);
             }
             
-            alert(`<img src="icons/protection.png" alt="верно" width="10px" height="10px"> Добро пожаловать обратно, ${contact}!`);
+            alert(`Добро пожаловать обратно, ${contact}!`);
             // Перенаправление в личный кабинет
             window.location.href = 'cabinet.html';
         } else {
-            errorBlock.textContent = '<img src="icons/protection.png" alt="верно" width="10px" height="10px"> Неверный email/телефон или пароль. Попробуйте снова.';
+            errorBlock.textContent = <img src="icons/protection.png" alt="верно" width="10px" height="10px">'Неверный email/телефон или пароль. Попробуйте снова.';
             errorBlock.classList.add('error-show');
             setTimeout(() => errorBlock.classList.remove('error-show'), 3000);
         }
     });
-    
-    // Вход через Telegram (демо)
-    document.getElementById('telegramLoginBtn')?.addEventListener('click', () => {
-        alert('📱 Интеграция с Telegram: после авторизации вы сможете быстро входить. Функция будет полностью доступна в ближайшее время.');
-        // Здесь мог бы быть OAuth Telegram
-    });
-    
     // Восстановление пароля
     document.getElementById('forgotPassword')?.addEventListener('click', (e) => {
         e.preventDefault();
-        alert('<img src="icons/envelope.png" alt="письмо" width="10px" height="10px"> Инструкции по восстановлению пароля отправлены на почту (демо-режим).');
+        alert('Инструкции по восстановлению пароля отправлены на почту (демо-режим).');
     });
     
     // Автозаполнение, если есть запомненные данные
