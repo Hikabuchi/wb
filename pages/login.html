@@ -21,7 +21,7 @@
     <!-- Форма авторизации -->
     <div id="loginForm">
         <div class="input-group">
-            <label>📧 Email или телефон</label>
+            <label><img src="icons/protection.png" alt="верно" width="10px" height="10px"> Email или телефон</label>
             <input type="text" class="input-field" id="loginContact" placeholder="example@skillswap.ru или +7 999 123-45-67">
         </div>
         <div class="input-group">
@@ -85,7 +85,7 @@
         const errorBlock = document.getElementById('errorMsg');
         
         if (!contact || !password) {
-            errorBlock.textContent = '⚠️ Заполните все поля';
+            errorBlock.textContent = '<img src="icons/warning.png" alt="предупреждение" width="10px" height="10px"> Заполните все поля';
             errorBlock.classList.add('error-show');
             setTimeout(() => errorBlock.classList.remove('error-show'), 2500);
             return;
@@ -104,11 +104,11 @@
                 sessionStorage.setItem('loggedInUser', contact);
             }
             
-            alert(`✅ Добро пожаловать обратно, ${contact}!`);
+            alert(`<img src="icons/protection.png" alt="верно" width="10px" height="10px"> Добро пожаловать обратно, ${contact}!`);
             // Перенаправление в личный кабинет
             window.location.href = 'cabinet.html';
         } else {
-            errorBlock.textContent = '❌ Неверный email/телефон или пароль. Попробуйте снова.';
+            errorBlock.textContent = '<img src="icons/protection.png" alt="верно" width="10px" height="10px"> Неверный email/телефон или пароль. Попробуйте снова.';
             errorBlock.classList.add('error-show');
             setTimeout(() => errorBlock.classList.remove('error-show'), 3000);
         }
@@ -123,7 +123,7 @@
     // Восстановление пароля
     document.getElementById('forgotPassword')?.addEventListener('click', (e) => {
         e.preventDefault();
-        alert('📧 Инструкции по восстановлению пароля отправлены на почту (демо-режим).');
+        alert('<img src="icons/envelope.png" alt="письмо" width="10px" height="10px"> Инструкции по восстановлению пароля отправлены на почту (демо-режим).');
     });
     
     // Автозаполнение, если есть запомненные данные
