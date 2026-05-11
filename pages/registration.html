@@ -9,7 +9,7 @@
 <body>
 
 <div class="register-container" id="registerContainer">
-    <div class="logo">Короче, научи</div>
+    <div class="logo"><img src="icons/logo.png" alt="верно" width="25px" height="25px">Короче, научи</div>
     <h2>Создать аккаунт</h2>
     <div class="sub">Обменивайся навыками с профессионалами</div>
 
@@ -37,7 +37,7 @@
         </div>
     </div>
 
-    <!-- ШАГ 2: ОНБОРДИНГ (заполнение профиля) -->
+    <!-- заполнение профиля -->
     <div id="onboardingBlock" class="onboarding">
         <div class="step-title">Заполните профиль, чтобы начать</div>
 
@@ -195,7 +195,7 @@
             registeredAt: new Date().toISOString()
         };
         localStorage.setItem('userProfile', JSON.stringify(finalProfile));
-        alert(`🎉 Добро пожаловать, ${displayName}!\nВаши навыки: ${selectedGivenSkills.join(', ') || 'пока нет'}\nЦели: ${selectedWantedSkills.join(', ') || 'пока нет'}\nПереходим в личный кабинет.`);
+        alert(`Добро пожаловать, ${displayName}!\nВаши навыки: ${selectedGivenSkills.join(', ') || 'пока нет'}\nЦели: ${selectedWantedSkills.join(', ') || 'пока нет'}\nПереходим в личный кабинет.`);
         
         // Редирект на личный кабинет (можно заменить на ссылку, но сейчас имитируем)
         window.location.href = 'cabinet.html';  // в будущем файл, сейчас просто заглушка
