@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/user.css">
+    <title>Личный кабинет</title>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-content">
+        <a href="index.html" class="logo">✨ SkillSwap</a>
+        <div class="header-right">
+            <div class="user-info">
+                <div class="avatar-sm">А</div>
+                <span class="user-name" id="userNameDisplay">Анна</span>
+            </div>
+            <button class="logout-btn" id="logoutBtn">Выйти</button>
+        </div>
+    </div>
+</header>
+
+<!-- Верхнее меню: Профиль / Мои сделки / Запросы / История -->
+<div class="top-menu">
+    <div class="menu-items">
+        <a href="#" class="menu-item active" data-tab="dashboard">📊 Профиль</a>
+        <a href="#" class="menu-item" data-tab="deals">🔄 Мои сделки</a>
+        <a href="#" class="menu-item" data-tab="requests">📨 Запросы</a>
+        <a href="#" class="menu-item" data-tab="history">📜 История</a>
+    </div>
+</div>
+
+<main class="container">
+    <!-- Приветствие -->
+    <div class="welcome-section">
+        <h1>Добро пожаловать, <span id="welcomeName">Анна</span> 👋</h1>
+        <p>Ваша личная статистика и активность на платформе</p>
+    </div>
+
+    <!-- Основная сетка Дашборда (виджеты) -->
+    <div id="dashboardContent">
+        <div class="dashboard-grid">
+            <!-- Виджет: Активные сделки -->
+            <div class="widget">
+                <div class="widget-header">
+                    <h3>🔄 Активные сделки</h3>
+                    <span class="count" id="activeDealsCount">2</span>
+                </div>
+                <div class="widget-body" id="activeDealsList">
+                    <!-- динамически через JS -->
+                </div>
+            </div>
+
+            <!-- Виджет: Входящие запросы на обмен -->
+            <div class="widget">
+                <div class="widget-header">
+                    <h3>📨 Входящие запросы</h3>
+                    <span class="count" id="incomingRequestsCount">3</span>
+                </div>
+                <div class="widget-body" id="incomingRequestsList">
+                    <!-- динамически -->
+                </div>
+            </div>
+
+            <!-- Виджет: Мои навыки -->
+            <div class="widget">
+                <div class="widget-header">
+                    <h3>🧠 Мои навыки</h3>
+                </div>
+                <div class="widget-body">
+                    <div class="skills-list" id="mySkillsList">
+                        <!-- динамически -->
+                    </div>
+                    <button class="btn-outline-small" id="editSkillsBtn" style="width: 100%; margin-top: 8px;">✏️ Редактировать навыки</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Быстрый переход в каталог -->
+        <div class="quick-action">
+            <h3>🔍 Найдите новые возможности</h3>
+            <p>Тысячи пользователей ждут обмена навыками. Начните прямо сейчас!</p>
+            <button class="btn-catalog" id="goToCatalogBtn">Перейти в каталог навыков →</button>
+        </div>
+    </div>
+
+    <!-- Контент для других вкладок (скрыт по умолчанию) -->
+    <div id="dealsContent" style="display: none;">
+        <div class="widget" style="width: 100%;">
+            <div class="widget-header">
+                <h3>Все мои сделки</h3>
+            </div>
+            <div class="widget-body" id="allDealsList"></div>
+        </div>
+    </div>
+
+    <div id="requestsContent" style="display: none;">
+        <div class="widget" style="width: 100%;">
+            <div class="widget-header">
+                <h3>Все запросы на обмен</h3>
+            </div>
+            <div class="widget-body" id="allRequestsList"></div>
+        </div>
+    </div>
+
+    <div id="historyContent" style="display: none;">
+        <div class="widget" style="width: 100%;">
+            <div class="widget-header">
+                <h3>История завершённых обменов</h3>
+            </div>
+            <div class="widget-body" id="historyList"></div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    © 2025 SkillSwap — платформа для обмена знаниями и навыками.
+</footer>
+
+<script>
+    // ========== ДЕМО-ДАННЫЕ ПОЛЬЗОВАТЕЛЯ ==========
+    let currentUser = {
+        name: 'Анна',
+        skills: ['Python', 'Figma', 'UI/UX Дизайн'],
+        activeDeals: [
+            { id: 1, title: 'Обмен: Python → Английский', partner: 'Максим', status: 'active', date: 'до 15.05' },
+            { id: 2, title: 'Обмен: Figma → Видеомонтаж', partner: 'Елена', status: 'active', date: 'до 20.05' }
+        ],
+        incomingRequests: [
+            { id: 101, from: 'Дмитрий', offer: 'хочет обменять "JavaScript" на ваш "Python"', status: 'pending' },
+            { id: 102, from: 'Ольга', offer: 'предлагает "Маркетинг" в обмен на "UI/UX"', status: 'pending' },
+            { id: 103, from: 'Иван', offer: 'интересуется "Figma" → предлагает "Фотография"', status: 'pending' }
+        ],
+        dealsHistory: [
+            { id: 201, title: 'Обмен: Python → Базы данных', partner: 'Сергей', completed: '10.04.2025', rating: 5 },
+            { id: 202, title: 'Обмен: Figma → Копирайтинг', partner: 'Мария', completed: '25.03.2025', rating: 4 }
+        ]
+    };
+
+    // Функция сохранения в localStorage
+    function saveUserData() {
+        localStorage.setItem('skillswap_user', JSON.stringify(currentUser));
+    }
+
+    function loadUserData() {
+        const saved = localStorage.getItem('skillswap_user');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                currentUser = parsed;
+            } catch(e) {}
+        }
+        updateAllWidgets();
+    }
+
+    // Обновление всех виджетов
+    function updateAllWidgets() {
+        // Обновляем имя
+        document.getElementById('userNameDisplay').innerText = currentUser.name;
+        document.getElementById('welcomeName').innerText = currentUser.name;
+        
+        // Активные сделки
+        const activeDealsContainer = document.getElementById('activeDealsList');
+        const activeCount = currentUser.activeDeals.length;
+        document.getElementById('activeDealsCount').innerText = activeCount;
+        
+        if (activeCount === 0) {
+            activeDealsContainer.innerHTML = '<div class="empty-state">Нет активных сделок</div>';
+        } else {
+            activeDealsContainer.innerHTML = currentUser.activeDeals.map(deal => `
+                <div class="deal-item">
+                    <div class="deal-info">
+                        <div class="deal-title">${deal.title}</div>
+                        <div class="deal-meta">с ${deal.partner} • ${deal.date}</div>
+                    </div>
+                    <span class="deal-status status-active">В процессе</span>
+                </div>
+            `).join('');
+        }
+        
+        // Входящие запросы
+        const requestsContainer = document.getElementById('incomingRequestsList');
+        const requestsCount = currentUser.incomingRequests.length;
+        document.getElementById('incomingRequestsCount').innerText = requestsCount;
+        
+        if (requestsCount === 0) {
+            requestsContainer.innerHTML = '<div class="empty-state">Нет входящих запросов</div>';
+        } else {
+            requestsContainer.innerHTML = currentUser.incomingRequests.map(req => `
+                <div class="request-item">
+                    <div class="deal-info">
+                        <div class="deal-title">${req.from}</div>
+                        <div class="deal-meta">${req.offer}</div>
+                    </div>
+                    <div class="request-actions">
+                        <button class="accept-btn" data-id="${req.id}">Принять</button>
+                        <button class="reject-btn" data-id="${req.id}">Отклонить</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Добавляем обработчики для кнопок
+            document.querySelectorAll('.accept-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(btn.dataset.id);
+                    acceptRequest(id);
+                });
+            });
+            document.querySelectorAll('.reject-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(btn.dataset.id);
+                    rejectRequest(id);
+                });
+            });
+        }
+        
+        // Мои навыки
+        const skillsContainer = document.getElementById('mySkillsList');
+        if (currentUser.skills.length === 0) {
+            skillsContainer.innerHTML = '<div class="empty-state">Навыки не добавлены</div>';
+        } else {
+            skillsContainer.innerHTML = currentUser.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('');
+        }
+        
+        // Полный список сделок для вкладки "Мои сделки"
+        const allDealsContainer = document.getElementById('allDealsList');
+        if (allDealsContainer) {
+            const allDeals = [...currentUser.activeDeals];
+            if (allDeals.length === 0) {
+                allDealsContainer.innerHTML = '<div class="empty-state">Нет сделок</div>';
+            } else {
+                allDealsContainer.innerHTML = allDeals.map(deal => `
+                    <div class="deal-item">
+                        <div class="deal-info">
+                            <div class="deal-title">${deal.title}</div>
+                            <div class="deal-meta">с ${deal.partner} • ${deal.date}</div>
+                        </div>
+                        <span class="deal-status status-active">Активна</span>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        // Все запросы
+        const allRequestsContainer = document.getElementById('allRequestsList');
+        if (allRequestsContainer) {
+            if (currentUser.incomingRequests.length === 0) {
+                allRequestsContainer.innerHTML = '<div class="empty-state">Нет запросов</div>';
+            } else {
+                allRequestsContainer.innerHTML = currentUser.incomingRequests.map(req => `
+                    <div class="request-item">
+                        <div class="deal-info">
+                            <div class="deal-title">${req.from}</div>
+                            <div class="deal-meta">${req.offer}</div>
+                        </div>
+                        <span class="deal-status status-pending">Ожидает</span>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        // История
+        const historyContainer = document.getElementById('historyList');
+        if (historyContainer) {
+            if (currentUser.dealsHistory.length === 0) {
+                historyContainer.innerHTML = '<div class="empty-state">История пуста</div>';
+            } else {
+                historyContainer.innerHTML = currentUser.dealsHistory.map(item => `
+                    <div class="deal-item">
+                        <div class="deal-info">
+                            <div class="deal-title">${item.title}</div>
+                            <div class="deal-meta">с ${item.partner} • завершена ${item.completed}</div>
+                        </div>
+                        <span class="deal-status" style="background:#06B6D420; color:#06B6D4;">⭐ ${item.rating}</span>
+                    </div>
+                `).join('');
+            }
+        }
+    }
+    
+    function acceptRequest(id) {
+        const request = currentUser.incomingRequests.find(r => r.id === id);
+        if (request) {
+            alert(`✅ Вы приняли запрос от ${request.from}. Свяжитесь для деталей обмена.`);
+            currentUser.incomingRequests = currentUser.incomingRequests.filter(r => r.id !== id);
+            saveUserData();
+            updateAllWidgets();
+        }
+    }
+    
+    function rejectRequest(id) {
+        const request = currentUser.incomingRequests.find(r => r.id === id);
+        if (request) {
+            alert(`❌ Вы отклонили запрос от ${request.from}.`);
+            currentUser.incomingRequests = currentUser.incomingRequests.filter(r => r.id !== id);
+            saveUserData();
+            updateAllWidgets();
+        }
+    }
+    
+    // Редактирование навыков
+    document.getElementById('editSkillsBtn')?.addEventListener('click', () => {
+        const newSkills = prompt('Введите ваши навыки через запятую:', currentUser.skills.join(', '));
+        if (newSkills) {
+            currentUser.skills = newSkills.split(',').map(s => s.trim()).filter(s => s);
+            saveUserData();
+            updateAllWidgets();
+        }
+    });
+    
+    // Переход в каталог
+    document.getElementById('goToCatalogBtn')?.addEventListener('click', () => {
+        alert('📚 Переход в каталог навыков (файл catalog.html будет создан)');
+        // window.location.href = 'catalog.html';
+    });
+    
+    // Переключение вкладок верхнего меню
+    const menuItems = document.querySelectorAll('.menu-item');
+    const dashboardDiv = document.getElementById('dashboardContent');
+    const dealsDiv = document.getElementById('dealsContent');
+    const requestsDiv = document.getElementById('requestsContent');
+    const historyDiv = document.getElementById('historyContent');
+    
+    function showTab(tabId) {
+        dashboardDiv.style.display = 'none';
+        dealsDiv.style.display = 'none';
+        requestsDiv.style.display = 'none';
+        historyDiv.style.display = 'none';
+        
+        if (tabId === 'dashboard') dashboardDiv.style.display = 'block';
+        if (tabId === 'deals') dealsDiv.style.display = 'block';
+        if (tabId === 'requests') requestsDiv.style.display = 'block';
+        if (tabId === 'history') historyDiv.style.display = 'block';
+        
+        menuItems.forEach(item => {
+            if (item.dataset.tab === tabId) item.classList.add('active');
+            else item.classList.remove('active');
+        });
+    }
+    
+    menuItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const tab = item.dataset.tab;
+            showTab(tab);
+        });
+    });
+    
+    // Выход
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        localStorage.removeItem('skillswap_user');
+        alert('Вы вышли из системы');
+        window.location.href = 'login.html';
+    });
+    
+    // Инициализация
+    loadUserData();
+    
+    // Если нет сохранённых данных, создаём демо
+    if (!localStorage.getItem('skillswap_user')) {
+        saveUserData();
+        loadUserData();
+    }
+</script>
+</body>
+</html>

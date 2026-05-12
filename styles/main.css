@@ -56,7 +56,6 @@
     --focus-shadow: #7C3AED40;
 }
 
-/* ========== RESET & GLOBAL ========== */
 * {
     margin: 0;
     padding: 0;
@@ -147,7 +146,7 @@ a {
     font-size: 1rem;
 }
 
-/*
+
 /* ========== АДАПТИВ ========== */
 @media (max-width: 768px) {
     h1 {

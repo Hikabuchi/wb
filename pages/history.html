@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/user.css">
+    <title>История обмена</title>
+
+</head>
+<body>
+
+<header class="header">
+    <div class="header-content">
+        <a href="cabinet.html" class="logo">logo</a>
+        <a href="cabinet.html" class="back-link">← Вернуться в профиль</a>
+    </div>
+</header>
+
+<main class="container">
+    <div class="page-header">
+        <h1>📜 История обмена</h1>
+        <p>Архив завершённых сделок и оставленные отзывы</p>
+    </div>
+
+    <!-- Фильтры -->
+    <div class="filters-section">
+        <div class="filters-title">Фильтры</div>
+        <div class="filters-grid">
+            <div class="filter-group">
+                <label class="filter-label">По дате (от)</label>
+                <input type="date" class="filter-input" id="dateFilter">
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">По участнику</label>
+                <input type="text" class="filter-input" id="partnerFilter" placeholder="Имя пользователя">
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">По навыку</label>
+                <input type="text" class="filter-input" id="skillFilter" placeholder="Название навыка">
+            </div>
+        </div>
+        <div class="filter-actions">
+            <button class="btn-reset" id="resetFiltersBtn">Сбросить</button>
+            <button class="btn-filter" id="applyFiltersBtn">Применить</button>
+        </div>
+    </div>
+
+    <!-- Список завершённых сделок -->
+    <div id="historyContainer" class="history-list"></div>
+</main>
+
+<footer class="footer">
+    © 2025 SkillSwap — платформа для обмена знаниями и навыками.
+</footer>
+
+<!-- Модальное окно для отзыва -->
+<div id="reviewModal" class="modal-overlay">
+    <div class="review-modal">
+        <div class="modal-header">
+            <h3>Оставить отзыв</h3>
+            <button class="close-modal" id="closeModalBtn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="rating-select">
+                <div class="rating-label">Оценка</div>
+                <div class="stars-input" id="starsInput">
+                    <span class="star" data-value="1">★</span>
+                    <span class="star" data-value="2">★</span>
+                    <span class="star" data-value="3">★</span>
+                    <span class="star" data-value="4">★</span>
+                    <span class="star" data-value="5">★</span>
+                </div>
+            </div>
+            <textarea class="review-textarea" id="reviewText" rows="4" placeholder="Напишите ваш отзыв..."></textarea>
+            <div class="modal-actions">
+                <button class="btn-cancel-review" id="cancelReviewBtn">Отмена</button>
+                <button class="btn-submit-review" id="submitReviewBtn">Отправить отзыв</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ========== ДЕМО-ДАННЫЕ ЗАВЕРШЁННЫХ СДЕЛОК ==========
+    let completedDeals = [
+        {
+            id: 1,
+            partner: { name: "Максим В.", avatar: "М", city: "СПБ" },
+            myOffer: "Python (Django)",
+            theirOffer: "Английский язык C1",
+            completedDate: "2025-04-15",
+            completedDateFormatted: "15.04.2025",
+            review: null,
+            reviewGiven: false
+        },
+        {
+            id: 2,
+            partner: { name: "Дмитрий К.", avatar: "Д", city: "Казань" },
+            myOffer: "JavaScript",
+            theirOffer: "Маркетинг SMM",
+            completedDate: "2025-05-01",
+            completedDateFormatted: "01.05.2025",
+            review: { rating: 5, text: "Отличный специалист! Всё чётко и вовремя. Рекомендую!", author: "Я", date: "01.05.2025" },
+            reviewGiven: true
+        },
+        {
+            id: 3,
+            partner: { name: "Мария И.", avatar: "М", city: "Москва" },
+            myOffer: "Project Management",
+            theirOffer: "Испанский язык",
+            completedDate: "2025-04-28",
+            completedDateFormatted: "28.04.2025",
+            review: { rating: 4, text: "Хороший подход, но иногда затягивали сроки. В целом хорошо.", author: "Я", date: "28.04.2025" },
+            reviewGiven: true
+        },
+        {
+            id: 4,
+            partner: { name: "Анна С.", avatar: "А", city: "Новосибирск" },
+            myOffer: "Figma UI/UX",
+            theirOffer: "Копирайтинг",
+            completedDate: "2025-04-10",
+            completedDateFormatted: "10.04.2025",
+            review: null,
+            reviewGiven: false
+        },
+        {
+            id: 5,
+            partner: { name: "Сергей П.", avatar: "С", city: "Екатеринбург" },
+            myOffer: "Аналитика данных",
+            theirOffer: "Фотография",
+            completedDate: "2025-03-25",
+            completedDateFormatted: "25.03.2025",
+            review: { rating: 5, text: "Профессионал своего дела! Очень доволен обменом.", author: "Я", date: "25.03.2025" },
+            reviewGiven: true
+        },
+        {
+            id: 6,
+            partner: { name: "Ольга Н.", avatar: "О", city: "Краснодар" },
+            myOffer: "React",
+            theirOffer: "Видеомонтаж",
+            completedDate: "2025-05-05",
+            completedDateFormatted: "05.05.2025",
+            review: null,
+            reviewGiven: false
+        },
+        {
+            id: 7,
+            partner: { name: "Иван К.", avatar: "И", city: "Ростов" },
+            myOffer: "UI/UX Дизайн",
+            theirOffer: "Английский B2",
+            completedDate: "2025-03-18",
+            completedDateFormatted: "18.03.2025",
+            review: null,
+            reviewGiven: false
+        }
+    ];
+
+    // Сохранение в localStorage
+    function saveDeals() {
+        localStorage.setItem("completedDeals", JSON.stringify(completedDeals));
+    }
+
+    function loadDeals() {
+        const saved = localStorage.getItem("completedDeals");
+        if (saved) {
+            try {
+                completedDeals = JSON.parse(saved);
+            } catch(e) {}
+        }
+    }
+
+    let currentFilter = {
+        date: "",
+        partner: "",
+        skill: ""
+    };
+
+    let currentDealForReview = null;
+
+    // Рендер истории с учётом фильтров
+    function renderHistory() {
+        let filtered = [...completedDeals];
+        
+        // Фильтр по дате (от)
+        if (currentFilter.date) {
+            filtered = filtered.filter(deal => deal.completedDate >= currentFilter.date);
+        }
+        
+        // Фильтр по участнику
+        if (currentFilter.partner.trim()) {
+            const searchTerm = currentFilter.partner.trim().toLowerCase();
+            filtered = filtered.filter(deal => deal.partner.name.toLowerCase().includes(searchTerm));
+        }
+        
+        // Фильтр по навыку (ищет и в myOffer, и в theirOffer)
+        if (currentFilter.skill.trim()) {
+            const skillTerm = currentFilter.skill.trim().toLowerCase();
+            filtered = filtered.filter(deal => 
+                deal.myOffer.toLowerCase().includes(skillTerm) || 
+                deal.theirOffer.toLowerCase().includes(skillTerm)
+            );
+        }
+        
+        const container = document.getElementById("historyContainer");
+        
+        if (filtered.length === 0) {
+            container.innerHTML = `<div class="empty-state">📭 Нет завершённых сделок по заданным критериям</div>`;
+            return;
+        }
+        
+        container.innerHTML = filtered.map(deal => {
+            // Рейтинг звёздами
+            let ratingHtml = "";
+            if (deal.review) {
+                const stars = "★".repeat(deal.review.rating) + "☆".repeat(5 - deal.review.rating);
+                ratingHtml = `
+                    <div class="rating-badge">
+                        <span class="rating-stars">${stars}</span>
+                        <span class="rating-text">(${deal.review.rating})</span>
+                    </div>
+                `;
+            } else {
+                ratingHtml = `<div class="rating-badge"><span class="rating-text">Нет оценки</span></div>`;
+            }
+            
+            // Отзыв
+            let reviewHtml = "";
+            if (deal.review) {
+                reviewHtml = `
+                    <div class="existing-review">
+                        <div class="review-text">"${deal.review.text}"</div>
+                        <div class="review-meta">⭐ ${deal.review.rating}/5 • ${deal.review.date}</div>
+                    </div>
+                `;
+            } else {
+                reviewHtml = `
+                    <div style="text-align: right;">
+                        <button class="btn-review" data-id="${deal.id}">✍️ Оставить отзыв</button>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="history-card" data-deal-id="${deal.id}">
+                    <div class="card-header">
+                        <div class="partner-info">
+                            <div class="partner-avatar">${deal.partner.avatar}</div>
+                            <div class="partner-details">
+                                <h3>${deal.partner.name}</h3>
+                                <div class="completed-date">📍 ${deal.partner.city} • Завершена ${deal.completedDateFormatted}</div>
+                            </div>
+                        </div>
+                        ${ratingHtml}
+                    </div>
+                    <div class="exchange-details">
+                        <div class="exchange-row">
+                            <span class="exchange-label">Я предлагал(а):</span>
+                            <span class="exchange-value"><span class="skill-tag">${deal.myOffer}</span></span>
+                        </div>
+                        <div class="exchange-row">
+                            <span class="exchange-label">Получил(а):</span>
+                            <span class="exchange-value"><span class="skill-tag">${deal.theirOffer}</span></span>
+                        </div>
+                    </div>
+                    <div class="review-section">
+                        ${reviewHtml}
+                    </div>
+                </div>
+            `;
+        }).join("");
+        
+        // Обработчики кнопок отзывов
+        document.querySelectorAll(".btn-review").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const dealId = parseInt(btn.dataset.id);
+                openReviewModal(dealId);
+            });
+        });
+    }
+    
+    // Открыть модалку для отзыва
+    function openReviewModal(dealId) {
+        currentDealForReview = completedDeals.find(d => d.id === dealId);
+        if (!currentDealForReview) return;
+        
+        // Сброс формы
+        document.getElementById("reviewText").value = "";
+        updateStars(0);
+        
+        document.getElementById("reviewModal").style.display = "flex";
+    }
+    
+    // Обновление звёзд
+    let selectedRating = 0;
+    
+    function updateStars(rating) {
+        selectedRating = rating;
+        const stars = document.querySelectorAll(".star");
+        stars.forEach((star, index) => {
+            if (index < rating) {
+                star.classList.add("active");
+            } else {
+                star.classList.remove("active");
+            }
+        });
+    }
+    
+    // Отправка отзыва
+    function submitReview() {
+        if (!currentDealForReview) return;
+        
+        const reviewText = document.getElementById("reviewText").value.trim();
+        if (selectedRating === 0) {
+            alert("Пожалуйста, поставьте оценку от 1 до 5");
+            return;
+        }
+        if (!reviewText) {
+            alert("Пожалуйста, напишите текст отзыва");
+            return;
+        }
+        
+        const now = new Date();
+        const formattedDate = `${now.getDate().toString().padStart(2, '0')}.${(now.getMonth()+1).toString().padStart(2, '0')}.${now.getFullYear()}`;
+        
+        currentDealForReview.review = {
+            rating: selectedRating,
+            text: reviewText,
+            author: "Я",
+            date: formattedDate
+        };
+        currentDealForReview.reviewGiven = true;
+        
+        saveDeals();
+        renderHistory();
+        closeReviewModal();
+        
+        // Показать уведомление
+        showToast(`✅ Отзыв для ${currentDealForReview.partner.name} сохранён!`);
+    }
+    
+    function closeReviewModal() {
+        document.getElementById("reviewModal").style.display = "none";
+        currentDealForReview = null;
+        selectedRating = 0;
+    }
+    
+    // Toast уведомление
+    function showToast(message) {
+        const toast = document.createElement("div");
+        toast.className = "toast-message";
+        toast.innerText = message;
+        toast.style.cssText = "position:fixed;bottom:30px;right:30px;background:#10B981;color:white;padding:12px 24px;border-radius:40px;z-index:1001;animation:fadeInOut 2.5s ease;";
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
+    }
+    
+    // Фильтры
+    function applyFilters() {
+        currentFilter.date = document.getElementById("dateFilter").value;
+        currentFilter.partner = document.getElementById("partnerFilter").value;
+        currentFilter.skill = document.getElementById("skillFilter").value;
+        renderHistory();
+    }
+    
+    function resetFilters() {
+        document.getElementById("dateFilter").value = "";
+        document.getElementById("partnerFilter").value = "";
+        document.getElementById("skillFilter").value = "";
+        currentFilter = { date: "", partner: "", skill: "" };
+        renderHistory();
+    }
+    
+    // Инициализация звёздного рейтинга в модалке
+    function initStarRating() {
+        const stars = document.querySelectorAll(".star");
+        stars.forEach(star => {
+            star.addEventListener("click", () => {
+                const value = parseInt(star.dataset.value);
+                updateStars(value);
+            });
+            star.addEventListener("mouseenter", () => {
+                const value = parseInt(star.dataset.value);
+                stars.forEach((s, idx) => {
+                    if (idx < value) {
+                        s.style.color = "#F59E0B";
+                    } else {
+                        s.style.color = "#334155";
+                    }
+                });
+            });
+            star.addEventListener("mouseleave", () => {
+                stars.forEach((s, idx) => {
+                    if (idx < selectedRating) {
+                        s.style.color = "#F59E0B";
+                    } else {
+                        s.style.color = "#334155";
+                    }
+                });
+            });
+        });
+    }
+    
+    // Добавляем стиль для toast
+    const style = document.createElement("style");
+    style.textContent = `
+        .toast-message {
+            animation: fadeInOut 2.5s ease;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(20px); }
+            15% { opacity: 1; transform: translateY(0); }
+            85% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(20px); visibility: hidden; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // События
+    document.getElementById("applyFiltersBtn").addEventListener("click", applyFilters);
+    document.getElementById("resetFiltersBtn").addEventListener("click", resetFilters);
+    document.getElementById("submitReviewBtn").addEventListener("click", submitReview);
+    document.getElementById("cancelReviewBtn").addEventListener("click", closeReviewModal);
+    document.getElementById("closeModalBtn").addEventListener("click", closeReviewModal);
+    document.getElementById("reviewModal").addEventListener("click", (e) => {
+        if (e.target === document.getElementById("reviewModal")) closeReviewModal();
+    });
+    
+    // Инициализация
+    loadDeals();
+    initStarRating();
+    renderHistory();
+</script>
+</body>
+</html>
