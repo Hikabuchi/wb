@@ -9,7 +9,7 @@
 <body>
 
 <div class="login-container">
-    <div class="logo"><img src="icons/logo.png" alt="верно" width="60px" height="100%">Короче, научи</div>
+    <div class="logo"><img src="../icons/logo.png" alt="верно" width="60px" height="100%">Короче, научи</div>
     <h2>Добро пожаловать</h2>
     <div class="sub">Войдите, чтобы продолжить обмен навыками</div>
 
@@ -21,7 +21,7 @@
     <!-- Форма авторизации -->
     <div id="loginForm">
         <div class="input-group">
-            <label><img src="icons/protection.png" alt="верно" width="50px" height="100%"> Email или телефон</label>
+            <label><img src="../icons/protection.png" alt="верно" width="50px" height="100%"> Email или телефон</label>
             <input type="text" class="input-field" id="loginContact" placeholder="example@skillswap.ru или +7 999 123-45-67">
         </div>
         <div class="input-group">
@@ -85,7 +85,7 @@
         const errorBlock = document.getElementById('errorMsg');
         
         if (!contact || !password) {
-            errorBlock.textContent = <img src="icons/warning.png" alt="предупреждение" width="50px" height="100%">'Заполните все поля';
+            errorBlock.textContent = <img src="../icons/warning.png" alt="предупреждение" width="50px" height="100%">'Заполните все поля';
             errorBlock.classList.add('error-show');
             setTimeout(() => errorBlock.classList.remove('error-show'), 2500);
             return;
@@ -108,7 +108,7 @@
             // Перенаправление в личный кабинет
             window.location.href = 'cabinet.html';
         } else {
-            errorBlock.textContent = <img src="icons/protection.png" alt="верно" width="50px" height="100%">'Неверный email/телефон или пароль. Попробуйте снова.';
+            errorBlock.textContent = <img src="../icons/protection.png" alt="верно" width="50px" height="100%">'Неверный email/телефон или пароль. Попробуйте снова.';
             errorBlock.classList.add('error-show');
             setTimeout(() => errorBlock.classList.remove('error-show'), 3000);
         }
