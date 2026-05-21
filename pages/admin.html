@@ -196,10 +196,10 @@
                 <td><strong>${user.name}</strong></td>
                 <td>${user.email}</td>
                 <td><span class="status-badge ${user.status === 'active' ? 'status-active' : 'status-blocked'}">${user.status === 'active' ? 'Активен' : 'Заблокирован'}</span></td>
-                <td>⭐ ${user.rating}</td>
+                <td><img src="../icons/star.png" alt="знак" width="50px" height="100%"> ${user.rating}</td>
                 <td>
-                    <button class="action-btn verify" data-id="${user.id}" data-action="verify">${user.verified ? '✅ Верифицирован' : '🔓 Верифицировать'}</button>
-                    <button class="action-btn block" data-id="${user.id}" data-action="block">${user.status === 'active' ? '🔒 Заблокировать' : '🔓 Разблокировать'}</button>
+                    <button class="action-btn verify" data-id="${user.id}" data-action="verify">${user.verified ? 'Верифицирован' : 'Верифицировать'}</button>
+                    <button class="action-btn block" data-id="${user.id}" data-action="block">${user.status === 'active' ? 'Заблокировать' : 'Разблокировать'}</button>
                 </td>
             </tr>
         `).join("");
@@ -240,11 +240,11 @@
         
         tbody.innerHTML = categories.map(cat => `
             <tr>
-                <td><strong>📁 ${cat.name}</strong></td>
+                <td><strong><img src="../icons/reading.png" alt="знак" width="50px" height="100%"> ${cat.name}</strong></td>
                 <td>${cat.subcategories.map(sub => `<span style="background:#1F2937;padding:4px 10px;border-radius:20px;margin:2px;display:inline-block;">${sub}</span>`).join('')}</td>
                 <td>
-                    <button class="action-btn edit" data-cat-id="${cat.id}">✏️ Редактировать</button>
-                    <button class="action-btn delete" data-cat-id="${cat.id}">🗑️ Удалить</button>
+                    <button class="action-btn edit" data-cat-id="${cat.id}"><img src="../icons/edit.png" alt="знак" width="50px" height="100%"> Редактировать</button>
+                    <button class="action-btn delete" data-cat-id="${cat.id}"><img src="../icons/delete.png" alt="знак" width="50px" height="100%"> Удалить</button>
                 </td>
             </tr>
         `).join("");
