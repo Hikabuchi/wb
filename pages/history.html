@@ -11,14 +11,14 @@
 
 <header class="header">
     <div class="header-content">
-        <a href="cabinet.html" class="logo">logo</a>
-        <a href="cabinet.html" class="back-link">← Вернуться в профиль</a>
+        <a href="cabinet.html" class="logo"><img src="../icons/logo.png" alt="логотип" width="60px" height="100%">Короче, научи</a>
+        <a href="cabinet.html" class="back-link"><img src="../icons/login_profile.png" alt="профиль" width="60px" height="100%">Вернуться в профиль</a>
     </div>
 </header>
 
 <main class="container">
     <div class="page-header">
-        <h1>📜 История обмена</h1>
+        <h1><img src="../icons/homework.png" alt="знак" width="50px" height="100%">История обмена</h1>
         <p>Архив завершённых сделок и оставленные отзывы</p>
     </div>
 
@@ -64,11 +64,11 @@
             <div class="rating-select">
                 <div class="rating-label">Оценка</div>
                 <div class="stars-input" id="starsInput">
-                    <span class="star" data-value="1">★</span>
-                    <span class="star" data-value="2">★</span>
-                    <span class="star" data-value="3">★</span>
-                    <span class="star" data-value="4">★</span>
-                    <span class="star" data-value="5">★</span>
+                    <span class="star" data-value="1"><img src="../icons/star.png" alt="знак" width="50px" height="100%"></span>
+                    <span class="star" data-value="2"><img src="../icons/star.png" alt="знак" width="50px" height="100%"></span>
+                    <span class="star" data-value="3"><img src="../icons/star.png" alt="знак" width="50px" height="100%"></span>
+                    <span class="star" data-value="4"><img src="../icons/star.png" alt="знак" width="50px" height="100%"></span>
+                    <span class="star" data-value="5"><img src="../icons/star.png" alt="знак" width="50px" height="100%"></span>
                 </div>
             </div>
             <textarea class="review-textarea" id="reviewText" rows="4" placeholder="Напишите ваш отзыв..."></textarea>
@@ -204,7 +204,7 @@
         const container = document.getElementById("historyContainer");
         
         if (filtered.length === 0) {
-            container.innerHTML = `<div class="empty-state">📭 Нет завершённых сделок по заданным критериям</div>`;
+            container.innerHTML = `<div class="empty-state"><img src="../icons/envelope.png" alt="знак" width="50px" height="100%"> Нет завершённых сделок по заданным критериям</div>`;
             return;
         }
         
@@ -212,7 +212,7 @@
             // Рейтинг звёздами
             let ratingHtml = "";
             if (deal.review) {
-                const stars = "★".repeat(deal.review.rating) + "☆".repeat(5 - deal.review.rating);
+                const stars = '<img src="../icons/star.png" alt="знак" width="50px" height="100%">'.repeat(deal.review.rating) + '<img src="../icons/star.png" alt="знак" width="50px" height="100%">'.repeat(5 - deal.review.rating);
                 ratingHtml = `
                     <div class="rating-badge">
                         <span class="rating-stars">${stars}</span>
@@ -229,13 +229,13 @@
                 reviewHtml = `
                     <div class="existing-review">
                         <div class="review-text">"${deal.review.text}"</div>
-                        <div class="review-meta">⭐ ${deal.review.rating}/5 • ${deal.review.date}</div>
+                        <div class="review-meta"><img src="../icons/star.png" alt="знак" width="50px" height="100%"> ${deal.review.rating}/5 • ${deal.review.date}</div>
                     </div>
                 `;
             } else {
                 reviewHtml = `
                     <div style="text-align: right;">
-                        <button class="btn-review" data-id="${deal.id}">✍️ Оставить отзыв</button>
+                        <button class="btn-review" data-id="${deal.id}"><img src="../icons/reviews.png" alt="знак" width="50px" height="100%"> Оставить отзыв</button>
                     </div>
                 `;
             }
@@ -247,7 +247,7 @@
                             <div class="partner-avatar">${deal.partner.avatar}</div>
                             <div class="partner-details">
                                 <h3>${deal.partner.name}</h3>
-                                <div class="completed-date">📍 ${deal.partner.city} • Завершена ${deal.completedDateFormatted}</div>
+                                <div class="completed-date">${deal.partner.city} Завершена ${deal.completedDateFormatted}</div>
                             </div>
                         </div>
                         ${ratingHtml}
@@ -335,7 +335,7 @@
         closeReviewModal();
         
         // Показать уведомление
-        showToast(`✅ Отзыв для ${currentDealForReview.partner.name} сохранён!`);
+        showToast(`Отзыв для ${currentDealForReview.partner.name} сохранён!`);
     }
     
     function closeReviewModal() {
