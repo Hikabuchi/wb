@@ -39,7 +39,7 @@
             <div class="stat-change">за всё время</div>
         </div>
         <div class="stat-card">
-            <div class="stat-title">⚠️ Спорных сделок</div>
+            <div class="stat-title"><img src="../icons/warning.png" alt="знак" width="50px" height="100%">Спорных сделок</div>
             <div class="stat-value" id="disputedDeals">0</div>
             <div class="stat-change">требуют внимания</div>
         </div>
@@ -47,10 +47,10 @@
 
     <!-- Вкладки -->
     <div class="admin-tabs">
-        <button class="admin-tab active" data-tab="users">👥 Пользователи</button>
-        <button class="admin-tab" data-tab="skills">🏷️ Навыки</button>
-        <button class="admin-tab" data-tab="disputes">⚖️ Спорные сделки</button>
-        <button class="admin-tab" data-tab="stats">📊 Статистика</button>
+        <button class="admin-tab active" data-tab="users"><img src="../icons/warning.png" alt="знак" width="50px" height="100%">Пользователи</button>
+        <button class="admin-tab" data-tab="skills"><img src="../icons/skills.png" alt="навыки" width="50px" height="100%">Навыки</button>
+        <button class="admin-tab" data-tab="disputes"><img src="../icons/warning.png" alt="знак" width="50px" height="100%">Спорные сделки</button>
+        <button class="admin-tab" data-tab="stats"><img src="../icons/statistics.png" alt="знак" width="50px" height="100%">Статистика</button>
     </div>
 
     <!-- Вкладка: Пользователи -->
@@ -78,7 +78,7 @@
                     <option value="root">Главная категория</option>
                 </select>
             </div>
-            <button class="btn-add" id="addCategoryBtn">+ Добавить категорию</button>
+            <button class="btn-add" id="addCategoryBtn">Добавить категорию</button>
         </div>
         <div class="admin-table">
             <table>
@@ -102,11 +102,11 @@
     <div id="statsTab" class="tab-content">
         <div class="charts-grid">
             <div class="chart-card">
-                <div class="chart-title">📈 Активность по дням</div>
+                <div class="chart-title"><img src="../icons/activity.png" alt="знак" width="50px" height="100%">Активность по дням</div>
                 <div class="chart-bar-container" id="activityChart"></div>
             </div>
             <div class="chart-card">
-                <div class="chart-title">🏆 Популярные навыки</div>
+                <div class="chart-title"><img src="../icons/trust.png" alt="знак" width="50px" height="100%">Популярные навыки</div>
                 <div class="chart-bar-container" id="popularSkillsChart"></div>
             </div>
         </div>
@@ -127,7 +127,7 @@
 <div id="arbitrationModal" class="modal-overlay">
     <div class="arbitration-modal">
         <div class="modal-header">
-            <h3>⚖️ Рассмотрение спора</h3>
+            <h3><img src="../icons/meeting.png" alt="знак" width="50px" height="100%">Рассмотрение спора</h3>
             <button class="close-modal" id="closeModalBtn" style="background:none;border:none;color:#9CA3AF;font-size:1.5rem;cursor:pointer;">&times;</button>
         </div>
         <div class="modal-body">
@@ -333,7 +333,7 @@
         if (!decision) return alert("Введите решение арбитража");
         const dispute = disputes.find(d => d.id === currentDisputeId);
         if (dispute) {
-            alert(`✅ Спор по сделке ${dispute.dealId} решён.\nРешение: ${decision}`);
+            alert(`Спор по сделке ${dispute.dealId} решён.\nРешение: ${decision}`);
             disputes = disputes.filter(d => d.id !== currentDisputeId);
             renderDisputes();
             updateStats();
