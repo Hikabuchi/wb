@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/user.css">
+    <title>Мои сделки</title>
+
+</head>
+<body>
+
+<header class="header">
+    <div class="header-content">
+        <a href="cabinet.html" class="logo">✨ SkillSwap</a>
+        <a href="cabinet.html" class="back-link">← Вернуться в профиль</a>
+    </div>
+</header>
+
+<main class="container">
+    <div class="page-header">
+        <h1>🔄 Мои сделки</h1>
+        <p>Управляйте активными обменами и просматривайте историю</p>
+    </div>
+
+    <!-- Фильтры -->
+    <div class="filters">
+        <button class="filter-btn active" data-filter="all">Все</button>
+        <button class="filter-btn" data-filter="active">Активные</button>
+        <button class="filter-btn" data-filter="completed">Завершённые</button>
+        <button class="filter-btn" data-filter="cancelled">Отменённые</button>
+    </div>
+
+    <!-- Список сделок -->
+    <div id="dealsContainer" class="deals-grid">
+        <!-- динамически через JS -->
+    </div>
+</main>
+
+<footer class="footer">
+    © 2025 SkillSwap — платформа для обмена знаниями и навыками.
+</footer>
+
+<!-- Модалка чата -->
+<div id="chatModal" class="modal-overlay">
+    <div class="chat-modal">
+        <div class="chat-header">
+            <h3>💬 Чат с <span id="chatPartnerName"></span></h3>
+            <button class="close-chat" id="closeChatBtn">&times;</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <!-- сообщения -->
+        </div>
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Напишите сообщение...">
+            <button class="chat-send" id="sendMessageBtn">→</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ========== ДЕМО-ДАННЫЕ СДЕЛОК ==========
+    let allDeals = [
+        {
+            id: 1001,
+            partner: { name: "Максим В.", avatar: "М", city: "СПБ" },
+            myOffer: "Python (Django)",
+            theirOffer: "Английский язык C1",
+            status: "active",
+            date: "Начало: 10.05.2025",
+            deadline: "до 25.05.2025"
+        },
+        {
+            id: 1002,
+            partner: { name: "Елена С.", avatar: "Е", city: "Москва" },
+            myOffer: "Figma / UI/UX",
+            theirOffer: "Видеомонтаж (Premiere)",
+            status: "active",
+            date: "Начало: 05.05.2025",
+            deadline: "до 20.05.2025"
+        },
+        {
+            id: 1003,
+            partner: { name: "Дмитрий К.", avatar: "Д", city: "Казань" },
+            myOffer: "JavaScript",
+            theirOffer: "Маркетинг SMM",
+            status: "completed",
+            date: "Завершена: 01.05.2025",
+            completedAt: "01.05.2025"
+        },
+        {
+            id: 1004,
+            partner: { name: "Ольга М.", avatar: "О", city: "Новосибирск" },
+            myOffer: "Аналитика данных",
+            theirOffer: "Копирайтинг",
+            status: "cancelled",
+            date: "Отменена: 15.04.2025",
+            cancelReason: "По соглашению сторон"
+        },
+        {
+            id: 1005,
+            partner: { name: "Андрей П.", avatar: "А", city: "Екатеринбург" },
+            myOffer: "React",
+            theirOffer: "Фотография",
+            status: "active",
+            date: "Начало: 12.05.2025",
+            deadline: "до 30.05.2025"
+        },
+        {
+            id: 1006,
+            partner: { name: "Мария И.", avatar: "М", city: "Москва" },
+            myOffer: "Project Management",
+            theirOffer: "Испанский язык",
+            status: "completed",
+            date: "Завершена: 28.04.2025",
+            completedAt: "28.04.2025"
+        }
+    ];
+
+    // Данные чатов для каждой сделки (демо)
+    let chatMessagesData = {
+        1001: [
+            { text: "Привет! Когда сможем созвониться?", sender: "partner", time: "10.05 14:30" },
+            { text: "Здравствуйте! Могу завтра в 18:00", sender: "me", time: "10.05 15:00" },
+            { text: "Отлично, договорились!", sender: "partner", time: "10.05 15:10" }
+        ],
+        1002: [
+            { text: "Скиньте примеры ваших работ в Figma", sender: "partner", time: "05.05 10:00" },
+            { text: "Вот ссылка на портфолио", sender: "me", time: "05.05 11:30" }
+        ],
+        1003: [
+            { text: "Спасибо за обмен! Было полезно", sender: "partner", time: "01.05 20:00" },
+            { text: "Вам спасибо! Отличный опыт", sender: "me", time: "01.05 20:15" }
+        ]
+    };
+
+    let currentFilter = "all";
+    let currentDealId = null;
+    let currentPartner = null;
+
+    // Функция отрисовки сделок
+    function renderDeals() {
+        const container = document.getElementById("dealsContainer");
+        let filtered = allDeals;
+        
+        if (currentFilter === "active") {
+            filtered = allDeals.filter(d => d.status === "active");
+        } else if (currentFilter === "completed") {
+            filtered = allDeals.filter(d => d.status === "completed");
+        } else if (currentFilter === "cancelled") {
+            filtered = allDeals.filter(d => d.status === "cancelled");
+        }
+        
+        if (filtered.length === 0) {
+            container.innerHTML = `<div class="empty-state">📭 В этой категории нет сделок</div>`;
+            return;
+        }
+        
+        container.innerHTML = filtered.map(deal => {
+            let statusClass = "";
+            let statusText = "";
+            if (deal.status === "active") {
+                statusClass = "status-active";
+                statusText = "Активна";
+            } else if (deal.status === "completed") {
+                statusClass = "status-completed";
+                statusText = "Завершена";
+            } else {
+                statusClass = "status-cancelled";
+                statusText = "Отменена";
+            }
+            
+            return `
+                <div class="deal-card" data-deal-id="${deal.id}">
+                    <div class="deal-status-bar">
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                        <span class="deal-id">№${deal.id}</span>
+                    </div>
+                    <div class="deal-body">
+                        <div class="deal-partner">
+                            <div class="partner-avatar">${deal.partner.avatar}</div>
+                            <div class="partner-info">
+                                <h3>${deal.partner.name}</h3>
+                                <p>${deal.partner.city}</p>
+                            </div>
+                        </div>
+                        <div class="exchange-details">
+                            <div class="exchange-row">
+                                <span class="exchange-label">Я предлагаю:</span>
+                                <span class="exchange-value"><span class="skill-tag">${deal.myOffer}</span></span>
+                            </div>
+                            <div class="exchange-row">
+                                <span class="exchange-label">Получаю:</span>
+                                <span class="exchange-value"><span class="skill-tag">${deal.theirOffer}</span></span>
+                            </div>
+                        </div>
+                        <div class="deal-date">
+                            📅 ${deal.date}
+                            ${deal.deadline ? ` • ⏰ ${deal.deadline}` : ''}
+                        </div>
+                    </div>
+                    <div class="deal-footer">
+                        <button class="btn-details" data-id="${deal.id}">💬 Подробнее / Чат</button>
+                        ${deal.status === "active" ? `<button class="btn-cancel" data-cancel="${deal.id}">✕ Отменить</button>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join("");
+        
+        // Обработчики кнопок
+        document.querySelectorAll(".btn-details").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const id = parseInt(btn.dataset.id);
+                openChat(id);
+            });
+        });
+        
+        document.querySelectorAll(".btn-cancel").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const id = parseInt(btn.dataset.cancel);
+                cancelDeal(id);
+            });
+        });
+    }
+    
+    // Отмена сделки
+    function cancelDeal(dealId) {
+        const deal = allDeals.find(d => d.id === dealId);
+        if (deal && confirm(`Отменить обмен с ${deal.partner.name}?`)) {
+            deal.status = "cancelled";
+            deal.date = `Отменена: ${new Date().toLocaleDateString()}`;
+            renderDeals();
+            showToast(`Сделка №${dealId} отменена`);
+        }
+    }
+    
+    // Открыть чат
+    function openChat(dealId) {
+        const deal = allDeals.find(d => d.id === dealId);
+        if (!deal) return;
+        
+        currentDealId = dealId;
+        currentPartner = deal.partner;
+        
+        document.getElementById("chatPartnerName").innerText = deal.partner.name;
+        
+        // Загружаем сообщения или создаём пустой массив
+        let messages = chatMessagesData[dealId] || [];
+        
+        const chatContainer = document.getElementById("chatMessages");
+        chatContainer.innerHTML = messages.map(msg => {
+            const msgClass = msg.sender === "me" ? "message-outgoing" : "message-incoming";
+            return `
+                <div class="message ${msgClass}">
+                    ${msg.text}
+                    <div class="message-time">${msg.time || getCurrentTime()}</div>
+                </div>
+            `;
+        }).join("");
+        
+        document.getElementById("chatModal").style.display = "flex";
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    function getCurrentTime() {
+        const now = new Date();
+        return `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+    }
+    
+    // Отправка сообщения
+    function sendMessage() {
+        const input = document.getElementById("chatInput");
+        const text = input.value.trim();
+        if (!text || currentDealId === null) return;
+        
+        if (!chatMessagesData[currentDealId]) {
+            chatMessagesData[currentDealId] = [];
+        }
+        
+        const newMsg = {
+            text: text,
+            sender: "me",
+            time: getCurrentTime()
+        };
+        chatMessagesData[currentDealId].push(newMsg);
+        
+        // Эмуляция ответа партнёра (через 1 секунду, только для демо)
+        const chatContainer = document.getElementById("chatMessages");
+        const msgDiv = document.createElement("div");
+        msgDiv.className = "message message-outgoing";
+        msgDiv.innerHTML = `${text}<div class="message-time">${getCurrentTime()}</div>`;
+        chatContainer.appendChild(msgDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        
+        input.value = "";
+        
+        // Имитация ответа (демо)
+        setTimeout(() => {
+            if (currentDealId) {
+                const replyMsg = {
+                    text: "Спасибо! Скоро отвечу 👍",
+                    sender: "partner",
+                    time: getCurrentTime()
+                };
+                chatMessagesData[currentDealId].push(replyMsg);
+                const replyDiv = document.createElement("div");
+                replyDiv.className = "message message-incoming";
+                replyDiv.innerHTML = `${replyMsg.text}<div class="message-time">${replyMsg.time}</div>`;
+                document.getElementById("chatMessages").appendChild(replyDiv);
+                const container = document.getElementById("chatMessages");
+                container.scrollTop = container.scrollHeight;
+            }
+        }, 1000);
+    }
+    
+    // Toast уведомление
+    function showToast(message) {
+        const toast = document.createElement("div");
+        toast.className = "toast-message";
+        toast.innerText = message;
+        toast.style.cssText = "position:fixed;bottom:30px;right:30px;background:#10B981;color:white;padding:12px 24px;border-radius:40px;z-index:1001;animation:fadeInOut 2.5s ease;";
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
+    }
+    
+    // Фильтры
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentFilter = btn.dataset.filter;
+            renderDeals();
+        });
+    });
+    
+    // Закрытие чата
+    document.getElementById("closeChatBtn").addEventListener("click", () => {
+        document.getElementById("chatModal").style.display = "none";
+        currentDealId = null;
+    });
+    
+    document.getElementById("chatModal").addEventListener("click", (e) => {
+        if (e.target === document.getElementById("chatModal")) {
+            document.getElementById("chatModal").style.display = "none";
+            currentDealId = null;
+        }
+    });
+    
+    document.getElementById("sendMessageBtn").addEventListener("click", sendMessage);
+    document.getElementById("chatInput").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendMessage();
+    });
+    
+    // Добавляем стиль для toast
+    const style = document.createElement("style");
+    style.textContent = `
+        .toast-message {
+            animation: fadeInOut 2.5s ease;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(20px); }
+            15% { opacity: 1; transform: translateY(0); }
+            85% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(20px); visibility: hidden; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Инициализация
+    renderDeals();
+</script>
+</body>
+</html>

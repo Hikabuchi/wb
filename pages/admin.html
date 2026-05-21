@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/admin.css">
+    <title>Админ-панель</title>
+</head>
+<body>
+
+<header class="admin-header">
+    <div class="admin-header-content">
+        <div class="admin-logo">
+            <span class="admin-badge">Администратор</span>
+        </div>
+        <div class="admin-user">
+            <div class="admin-avatar">A</div>
+            <button class="logout-admin" id="adminLogout">Выйти</button>
+        </div>
+    </div>
+</header>
+
+<main class="admin-container">
+    <!-- Статистические карточки (общие для всех вкладок) -->
+    <div class="stats-grid" id="statsCards">
+        <div class="stat-card">
+            <div class="stat-title">Всего пользователей</div>
+            <div class="stat-value" id="totalUsers">0</div>
+            <div class="stat-change">↑ +12 за неделю</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">Активных сделок</div>
+            <div class="stat-value" id="activeDeals">0</div>
+            <div class="stat-change">в процессе</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">Завершённых сделок</div>
+            <div class="stat-value" id="completedDeals">0</div>
+            <div class="stat-change">за всё время</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">⚠️ Спорных сделок</div>
+            <div class="stat-value" id="disputedDeals">0</div>
+            <div class="stat-change">требуют внимания</div>
+        </div>
+    </div>
+
+    <!-- Вкладки -->
+    <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="users">👥 Пользователи</button>
+        <button class="admin-tab" data-tab="skills">🏷️ Навыки</button>
+        <button class="admin-tab" data-tab="disputes">⚖️ Спорные сделки</button>
+        <button class="admin-tab" data-tab="stats">📊 Статистика</button>
+    </div>
+
+    <!-- Вкладка: Пользователи -->
+    <div id="usersTab" class="tab-content active">
+        <div class="admin-table">
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Пользователь</th><th>Email</th><th>Статус</th><th>Рейтинг</th><th>Действия</th></tr>
+                </thead>
+                <tbody id="usersTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Вкладка: Навыки -->
+    <div id="skillsTab" class="tab-content">
+        <div class="add-form">
+            <div class="form-group">
+                <label>Название категории</label>
+                <input type="text" id="newCategoryName" placeholder="Например: Музыка">
+            </div>
+            <div class="form-group">
+                <label>Родительская категория</label>
+                <select id="parentCategory">
+                    <option value="root">Главная категория</option>
+                </select>
+            </div>
+            <button class="btn-add" id="addCategoryBtn">+ Добавить категорию</button>
+        </div>
+        <div class="admin-table">
+            <table>
+                <thead><tr><th>Категория</th><th>Подкатегории</th><th>Действия</th></tr></thead>
+                <tbody id="categoriesTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Вкладка: Спорные сделки -->
+    <div id="disputesTab" class="tab-content">
+        <div class="admin-table">
+            <table>
+                <thead><tr><th>ID сделки</th><th>Участники</th><th>Суть спора</th><th>Статус</th><th>Действия</th></tr></thead>
+                <tbody id="disputesTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Вкладка: Статистика -->
+    <div id="statsTab" class="tab-content">
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-title">📈 Активность по дням</div>
+                <div class="chart-bar-container" id="activityChart"></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">🏆 Популярные навыки</div>
+                <div class="chart-bar-container" id="popularSkillsChart"></div>
+            </div>
+        </div>
+        <div class="simple-stats">
+            <div class="simple-stat"><div class="number" id="statTotalUsers">0</div><div>Всего пользователей</div></div>
+            <div class="simple-stat"><div class="number" id="statVerifiedUsers">0</div><div>Верифицировано</div></div>
+            <div class="simple-stat"><div class="number" id="statTotalDeals">0</div><div>Всего сделок</div></div>
+            <div class="simple-stat"><div class="number" id="statSuccessRate">0%</div><div>Успешных сделок</div></div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    © 2025 SkillSwap — Административная панель
+</footer>
+
+<!-- Модалка арбитража -->
+<div id="arbitrationModal" class="modal-overlay">
+    <div class="arbitration-modal">
+        <div class="modal-header">
+            <h3>⚖️ Рассмотрение спора</h3>
+            <button class="close-modal" id="closeModalBtn" style="background:none;border:none;color:#9CA3AF;font-size:1.5rem;cursor:pointer;">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="disputeDetails">Загрузка...</p>
+            <textarea id="arbitrationDecision" rows="3" style="width:100%;margin-top:16px;padding:12px;background:#0D1117;border:1px solid #1F2937;border-radius:12px;color:white;" placeholder="Решение арбитража..."></textarea>
+        </div>
+        <div class="modal-actions">
+            <button class="action-btn" id="rejectDisputeBtn" style="border-color:#EF4444;color:#EF4444;">Отклонить спор</button>
+            <button class="action-btn" id="resolveDisputeBtn" style="border-color:#10B981;color:#10B981;">Принять решение</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ========== ДЕМО-ДАННЫЕ ==========
+    let users = [
+        { id: 1, name: "Анна Смирнова", email: "anna@skillswap.ru", status: "active", verified: true, rating: 4.9 },
+        { id: 2, name: "Максим Воронов", email: "maxim@skillswap.ru", status: "active", verified: true, rating: 4.8 },
+        { id: 3, name: "Дмитрий Ковалёв", email: "dmitry@skillswap.ru", status: "blocked", verified: false, rating: 3.2 },
+        { id: 4, name: "Елена Морозова", email: "elena@skillswap.ru", status: "active", verified: true, rating: 4.9 },
+        { id: 5, name: "Сергей Павлов", email: "sergey@skillswap.ru", status: "active", verified: false, rating: 4.6 },
+        { id: 6, name: "Ольга Новикова", email: "olga@skillswap.ru", status: "blocked", verified: true, rating: 5.0 }
+    ];
+
+    let categories = [
+        { id: 1, name: "IT & Программирование", parent: null, subcategories: ["Python", "JavaScript", "Java"] },
+        { id: 2, name: "Дизайн & Графика", parent: null, subcategories: ["Figma", "Photoshop", "Illustrator"] },
+        { id: 3, name: "Маркетинг & SMM", parent: null, subcategories: ["SMM", "SEO", "Копирайтинг"] }
+    ];
+
+    let disputes = [
+        { id: 101, dealId: "D-1001", parties: "Анна Смирнова vs Максим Воронов", issue: "Невыполненные обязательства по обмену", status: "pending" },
+        { id: 102, dealId: "D-1005", parties: "Елена Морозова vs Сергей Павлов", issue: "Сторона не выходит на связь", status: "pending" }
+    ];
+
+    let currentDisputeId = null;
+
+    // Статистика
+    function updateStats() {
+        const totalUsers = users.length;
+        const activeUsers = users.filter(u => u.status === "active").length;
+        const blockedUsers = users.filter(u => u.status === "blocked").length;
+        const verifiedUsers = users.filter(u => u.verified).length;
+        const activeDeals = 8; // демо
+        const completedDeals = 47;
+        const disputedDeals = disputes.length;
+        
+        document.getElementById("totalUsers").innerText = totalUsers;
+        document.getElementById("activeDeals").innerText = activeDeals;
+        document.getElementById("completedDeals").innerText = completedDeals;
+        document.getElementById("disputedDeals").innerText = disputedDeals;
+        
+        document.getElementById("statTotalUsers").innerText = totalUsers;
+        document.getElementById("statVerifiedUsers").innerText = verifiedUsers;
+        document.getElementById("statTotalDeals").innerText = activeDeals + completedDeals;
+        const successRate = Math.round((completedDeals / (activeDeals + completedDeals)) * 100);
+        document.getElementById("statSuccessRate").innerText = successRate;
+    }
+
+    // Рендер пользователей
+    function renderUsers() {
+        const tbody = document.getElementById("usersTableBody");
+        tbody.innerHTML = users.map(user => `
+            <tr>
+                <td>${user.id}</td>
+                <td><strong>${user.name}</strong></td>
+                <td>${user.email}</td>
+                <td><span class="status-badge ${user.status === 'active' ? 'status-active' : 'status-blocked'}">${user.status === 'active' ? 'Активен' : 'Заблокирован'}</span></td>
+                <td>⭐ ${user.rating}</td>
+                <td>
+                    <button class="action-btn verify" data-id="${user.id}" data-action="verify">${user.verified ? '✅ Верифицирован' : '🔓 Верифицировать'}</button>
+                    <button class="action-btn block" data-id="${user.id}" data-action="block">${user.status === 'active' ? '🔒 Заблокировать' : '🔓 Разблокировать'}</button>
+                </td>
+            </tr>
+        `).join("");
+        
+        document.querySelectorAll("[data-action='verify']").forEach(btn => {
+            btn.addEventListener("click", () => verifyUser(parseInt(btn.dataset.id)));
+        });
+        document.querySelectorAll("[data-action='block']").forEach(btn => {
+            btn.addEventListener("click", () => toggleBlockUser(parseInt(btn.dataset.id)));
+        });
+    }
+
+    function verifyUser(userId) {
+        const user = users.find(u => u.id === userId);
+        if (user) {
+            user.verified = !user.verified;
+            renderUsers();
+            updateStats();
+            alert(user.verified ? "Пользователь верифицирован" : "Верификация отменена");
+        }
+    }
+
+    function toggleBlockUser(userId) {
+        const user = users.find(u => u.id === userId);
+        if (user) {
+            user.status = user.status === "active" ? "blocked" : "active";
+            renderUsers();
+            updateStats();
+            alert(user.status === "active" ? "Пользователь разблокирован" : "Пользователь заблокирован");
+        }
+    }
+
+    // Рендер категорий
+    function renderCategories() {
+        const tbody = document.getElementById("categoriesTableBody");
+        const parentSelect = document.getElementById("parentCategory");
+        parentSelect.innerHTML = '<option value="root">Главная категория</option>';
+        
+        tbody.innerHTML = categories.map(cat => `
+            <tr>
+                <td><strong>📁 ${cat.name}</strong></td>
+                <td>${cat.subcategories.map(sub => `<span style="background:#1F2937;padding:4px 10px;border-radius:20px;margin:2px;display:inline-block;">${sub}</span>`).join('')}</td>
+                <td>
+                    <button class="action-btn edit" data-cat-id="${cat.id}">✏️ Редактировать</button>
+                    <button class="action-btn delete" data-cat-id="${cat.id}">🗑️ Удалить</button>
+                </td>
+            </tr>
+        `).join("");
+        
+        categories.forEach(cat => {
+            const option = document.createElement("option");
+            option.value = cat.id;
+            option.textContent = cat.name;
+            parentSelect.appendChild(option);
+        });
+        
+        document.querySelectorAll("[data-cat-id]").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const catId = parseInt(btn.dataset.catId);
+                if (btn.classList.contains("edit")) {
+                    const newName = prompt("Введите новое название категории:");
+                    if (newName) {
+                        const cat = categories.find(c => c.id === catId);
+                        if (cat) cat.name = newName;
+                        renderCategories();
+                    }
+                } else if (btn.classList.contains("delete")) {
+                    if (confirm("Удалить категорию?")) {
+                        categories = categories.filter(c => c.id !== catId);
+                        renderCategories();
+                    }
+                }
+            });
+        });
+    }
+
+    document.getElementById("addCategoryBtn").addEventListener("click", () => {
+        const newName = document.getElementById("newCategoryName").value.trim();
+        const parentId = document.getElementById("parentCategory").value;
+        if (!newName) return alert("Введите название категории");
+        
+        const newId = Date.now();
+        if (parentId === "root") {
+            categories.push({ id: newId, name: newName, parent: null, subcategories: [] });
+        } else {
+            const parent = categories.find(c => c.id == parentId);
+            if (parent) {
+                parent.subcategories.push(newName);
+            }
+        }
+        document.getElementById("newCategoryName").value = "";
+        renderCategories();
+        alert("Категория добавлена");
+    });
+
+    // Рендер споров
+    function renderDisputes() {
+        const tbody = document.getElementById("disputesTableBody");
+        tbody.innerHTML = disputes.map(d => `
+            <tr>
+                <td>${d.dealId}</td>
+                <td>${d.parties}</td>
+                <td>${d.issue}</td>
+                <td><span class="status-badge status-pending">На рассмотрении</span></td>
+                <td><button class="action-btn resolve" data-dispute-id="${d.id}">⚖️ Рассмотреть</button></td>
+            </tr>
+        `).join("");
+        
+        document.querySelectorAll(".resolve").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const id = parseInt(btn.dataset.disputeId);
+                openArbitration(id);
+            });
+        });
+    }
+
+    function openArbitration(disputeId) {
+        currentDisputeId = disputeId;
+        const dispute = disputes.find(d => d.id === disputeId);
+        document.getElementById("disputeDetails").innerHTML = `
+            <strong>Сделка:</strong> ${dispute.dealId}<br>
+            <strong>Участники:</strong> ${dispute.parties}<br>
+            <strong>Суть спора:</strong> ${dispute.issue}
+        `;
+        document.getElementById("arbitrationDecision").value = "";
+        document.getElementById("arbitrationModal").style.display = "flex";
+    }
+
+    document.getElementById("resolveDisputeBtn").addEventListener("click", () => {
+        const decision = document.getElementById("arbitrationDecision").value;
+        if (!decision) return alert("Введите решение арбитража");
+        const dispute = disputes.find(d => d.id === currentDisputeId);
+        if (dispute) {
+            alert(`✅ Спор по сделке ${dispute.dealId} решён.\nРешение: ${decision}`);
+            disputes = disputes.filter(d => d.id !== currentDisputeId);
+            renderDisputes();
+            updateStats();
+        }
+        document.getElementById("arbitrationModal").style.display = "none";
+    });
+
+    document.getElementById("rejectDisputeBtn").addEventListener("click", () => {
+        if (confirm("Отклонить спор без решения?")) {
+            disputes = disputes.filter(d => d.id !== currentDisputeId);
+            renderDisputes();
+            updateStats();
+            document.getElementById("arbitrationModal").style.display = "none";
+        }
+    });
+
+    // Статистика графики
+    function renderCharts() {
+        const activityData = [45, 52, 48, 61, 55, 72, 68];
+        const days = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+        const activityContainer = document.getElementById("activityChart");
+        activityContainer.innerHTML = activityData.map((val, i) => `
+            <div class="chart-bar-item">
+                <div class="chart-bar-label">${days[i]}</div>
+                <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: ${val}%;">${val}</div></div>
+            </div>
+        `).join("");
+        
+        const popularSkills = ["Python", "Figma", "SMM", "Английский", "JavaScript"];
+        const skillCounts = [28, 24, 19, 22, 18];
+        const skillsContainer = document.getElementById("popularSkillsChart");
+        skillsContainer.innerHTML = popularSkills.map((skill, i) => `
+            <div class="chart-bar-item">
+                <div class="chart-bar-label">${skill}</div>
+                <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: ${skillCounts[i] * 2}%; background:#06B6D4;">${skillCounts[i]}</div></div>
+            </div>
+        `).join("");
+    }
+
+    // Вкладки
+    const tabs = document.querySelectorAll(".admin-tab");
+    tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            tabs.forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+            document.querySelectorAll(".tab-content").forEach(tc => tc.classList.remove("active"));
+            const tabId = tab.dataset.tab;
+            if (tabId === "users") document.getElementById("usersTab").classList.add("active");
+            if (tabId === "skills") document.getElementById("skillsTab").classList.add("active");
+            if (tabId === "disputes") document.getElementById("disputesTab").classList.add("active");
+            if (tabId === "stats") document.getElementById("statsTab").classList.add("active");
+        });
+    });
+
+    // Закрытие модалки
+    document.getElementById("closeModalBtn").addEventListener("click", () => {
+        document.getElementById("arbitrationModal").style.display = "none";
+    });
+    document.getElementById("arbitrationModal").addEventListener("click", (e) => {
+        if (e.target === document.getElementById("arbitrationModal")) {
+            document.getElementById("arbitrationModal").style.display = "none";
+        }
+    });
+
+    document.getElementById("adminLogout").addEventListener("click", () => {
+        alert("Выход из админ-панели");
+        window.location.href = "login.html";
+    });
+
+    // Инициализация
+    updateStats();
+    renderUsers();
+    renderCategories();
+    renderDisputes();
+    renderCharts();
+</script>
+</body>
+</html>

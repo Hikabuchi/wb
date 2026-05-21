@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/user.css">
+    <title>Каталог навыков</title>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-content">
+        <a href="cabinet.html" class="logo">✨ SkillSwap</a>
+        <a href="cabinet.html" class="back-link">← Вернуться в профиль</a>
+    </div>
+</header>
+
+<main class="container">
+    <div class="page-header">
+        <h1>📚 Каталог навыков</h1>
+        <p>Выберите категорию и найдите экспертов для обмена</p>
+    </div>
+
+    <div class="catalog-layout">
+        <!-- Боковая панель с категориями и подкатегориями -->
+        <aside class="categories-sidebar">
+            <div class="categories-card">
+                <div class="category-header">🎯 Категории</div>
+                <div class="category-list" id="categoryList">
+                    <!-- динамически через JS -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Область результатов -->
+        <div class="results-area">
+            <div class="breadcrumb" id="breadcrumb">
+                📁 <span>Все навыки</span>
+            </div>
+            <div class="results-header">
+                <div class="results-count" id="resultsCount">Найдено специалистов: <span>0</span></div>
+            </div>
+            <div id="usersGrid" class="users-grid">
+                <!-- динамически через JS -->
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    © 2025 SkillSwap — платформа для обмена знаниями и навыками.
+</footer>
+
+<script>
+    // ========== ДАННЫЕ: КАТЕГОРИИ И ПОДКАТЕГОРИИ ==========
+    const categories = [
+        {
+            id: "it",
+            name: "💻 IT & Программирование",
+            icon: "💻",
+            subcategories: [
+                { id: "python", name: "Python", skills: ["Python", "Django", "FastAPI", "Data Science"] },
+                { id: "js", name: "JavaScript", skills: ["JavaScript", "React", "Vue", "Node.js", "TypeScript"] },
+                { id: "java", name: "Java", skills: ["Java", "Spring", "Kotlin"] },
+                { id: "php", name: "PHP", skills: ["PHP", "Laravel", "WordPress"] }
+            ]
+        },
+        {
+            id: "design",
+            name: "🎨 Дизайн & Графика",
+            icon: "🎨",
+            subcategories: [
+                { id: "figma", name: "Figma", skills: ["Figma", "UI/UX", "Прототипирование"] },
+                { id: "photoshop", name: "Photoshop", skills: ["Photoshop", "Ретушь", "Коллажи"] },
+                { id: "illustrator", name: "Illustrator", skills: ["Illustrator", "Векторная графика", "Логотипы"] },
+                { id: "3d", name: "3D-моделирование", skills: ["Blender", "3ds Max", "Cinema 4D"] }
+            ]
+        },
+        {
+            id: "marketing",
+            name: "📊 Маркетинг & SMM",
+            icon: "📊",
+            subcategories: [
+                { id: "smm", name: "SMM", skills: ["SMM", "Instagram", "Telegram", "Таргет"] },
+                { id: "seo", name: "SEO", skills: ["SEO", "Аналитика", "Контент-маркетинг"] },
+                { id: "copywriting", name: "Копирайтинг", skills: ["Копирайтинг", "Тексты", "Продажи"] }
+            ]
+        },
+        {
+            id: "languages",
+            name: "🌍 Языки & Перевод",
+            icon: "🌍",
+            subcategories: [
+                { id: "english", name: "Английский", skills: ["Английский A1-C2", "Деловой английский", "Подготовка к IELTS/TOEFL"] },
+                { id: "spanish", name: "Испанский", skills: ["Испанский"] },
+                { id: "german", name: "Немецкий", skills: ["Немецкий"] },
+                { id: "french", name: "Французский", skills: ["Французский"] }
+            ]
+        },
+        {
+            id: "photo",
+            name: "📸 Фото & Видео",
+            icon: "📸",
+            subcategories: [
+                { id: "photography", name: "Фотография", skills: ["Портретная съёмка", "Предметная съёмка", "Свадебная съёмка"] },
+                { id: "video", name: "Видеомонтаж", skills: ["Premiere Pro", "After Effects", "DaVinci Resolve", "Монтаж"] }
+            ]
+        },
+        {
+            id: "self",
+            name: "🧘 Саморазвитие",
+            icon: "🧘",
+            subcategories: [
+                { id: "coaching", name: "Коучинг", skills: ["Коучинг", "Наставничество", "Карьерный консалтинг"] },
+                { id: "psychology", name: "Психология", skills: ["Психология", "НЛП", "Эмоциональный интеллект"] },
+                { id: "public", name: "Ораторское искусство", skills: ["Ораторское искусство", "Презентации"] }
+            ]
+        }
+    ];
+
+    // Демо-пользователи с их навыками
+    let users = [
+        { id: 1, name: "Максим Воронов", avatar: "М", city: "Москва", rating: 4.8, reviews: 23, online: true, skills: ["Python", "Django", "FastAPI"] },
+        { id: 2, name: "Анна Смирнова", avatar: "А", city: "СПБ", rating: 4.9, reviews: 45, online: false, skills: ["Figma", "UI/UX", "Прототипирование"] },
+        { id: 3, name: "Дмитрий Ковалёв", avatar: "Д", city: "Казань", rating: 4.7, reviews: 31, online: true, skills: ["JavaScript", "React", "TypeScript"] },
+        { id: 4, name: "Елена Морозова", avatar: "Е", city: "Москва", rating: 4.9, reviews: 67, online: true, skills: ["SMM", "Таргет", "Instagram", "Telegram"] },
+        { id: 5, name: "Сергей Павлов", avatar: "С", city: "Новосибирск", rating: 4.6, reviews: 18, online: false, skills: ["Английский C1", "Деловой английский"] },
+        { id: 6, name: "Ольга Новикова", avatar: "О", city: "Екатеринбург", rating: 5.0, reviews: 89, online: true, skills: ["Photoshop", "Ретушь", "Портретная съёмка"] },
+        { id: 7, name: "Иван Тихонов", avatar: "И", city: "Краснодар", rating: 4.5, reviews: 27, online: true, skills: ["Коучинг", "Наставничество"] },
+        { id: 8, name: "Мария Лебедева", avatar: "М", city: "Москва", rating: 4.8, reviews: 34, online: false, skills: ["Premiere Pro", "After Effects", "Видеомонтаж"] },
+        { id: 9, name: "Алексей Фёдоров", avatar: "А", city: "Ростов", rating: 4.4, reviews: 12, online: true, skills: ["SEO", "Аналитика", "Контент-маркетинг"] },
+        { id: 10, name: "Екатерина Волкова", avatar: "Е", city: "НН", rating: 4.9, reviews: 56, online: true, skills: ["Испанский", "Английский C2"] },
+        { id: 11, name: "Павел Соколов", avatar: "П", city: "СПБ", rating: 4.7, reviews: 29, online: true, skills: ["Java", "Spring", "Kotlin"] },
+        { id: 12, name: "Наталья Кузнецова", avatar: "Н", city: "Москва", rating: 4.9, reviews: 41, online: false, skills: ["Illustrator", "Векторная графика", "Логотипы"] },
+        { id: 13, name: "Владимир Медведев", avatar: "В", city: "Казань", rating: 4.6, reviews: 19, online: true, skills: ["Blender", "3ds Max", "3D-моделирование"] },
+        { id: 14, name: "Юлия Зайцева", avatar: "Ю", city: "Новосибирск", rating: 4.8, reviews: 33, online: true, skills: ["Копирайтинг", "Тексты", "Продажи"] },
+        { id: 15, name: "Константин Гришин", avatar: "К", city: "Екатеринбург", rating: 4.5, reviews: 15, online: true, skills: ["Психология", "НЛП"] }
+    ];
+
+    let currentCategoryId = null;
+    let currentSubcategoryId = null;
+    let currentSkillName = null;
+
+    // Генерация дерева категорий
+    function renderCategories() {
+        const container = document.getElementById("categoryList");
+        container.innerHTML = "";
+        
+        categories.forEach(cat => {
+            const catDiv = document.createElement("div");
+            catDiv.className = `category-item ${currentCategoryId === cat.id ? "active" : ""}`;
+            catDiv.dataset.categoryId = cat.id;
+            
+            const catHeader = document.createElement("div");
+            catHeader.className = "category-name";
+            catHeader.innerHTML = `
+                <span>${cat.name}</span>
+                <span class="subcategory-count">${cat.subcategories.length}</span>
+            `;
+            
+            const subList = document.createElement("div");
+            subList.className = "subcategory-list";
+            
+            cat.subcategories.forEach(sub => {
+                const subItem = document.createElement("div");
+                subItem.className = `subcategory-item ${currentSubcategoryId === sub.id ? "active" : ""}`;
+                subItem.dataset.categoryId = cat.id;
+                subItem.dataset.subcategoryId = sub.id;
+                subItem.dataset.skills = JSON.stringify(sub.skills);
+                subItem.innerHTML = `
+                    <span>${sub.name}</span>
+                    <span class="skill-count">${sub.skills.length}</span>
+                `;
+                subItem.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    selectSubcategory(cat.id, sub.id, sub.name);
+                });
+                subList.appendChild(subItem);
+            });
+            
+            catDiv.appendChild(catHeader);
+            catDiv.appendChild(subList);
+            
+            catDiv.addEventListener("click", (e) => {
+                if (e.target.closest(".subcategory-item")) return;
+                toggleCategory(cat.id);
+            });
+            
+            container.appendChild(catDiv);
+        });
+    }
+    
+    function toggleCategory(categoryId) {
+        const catElement = document.querySelector(`.category-item[data-category-id="${categoryId}"]`);
+        if (catElement) {
+            catElement.classList.toggle("expanded");
+            if (!catElement.classList.contains("expanded")) {
+                // Если сворачиваем категорию, снимаем выбор подкатегории
+                if (currentCategoryId === categoryId) {
+                    currentSubcategoryId = null;
+                    currentSkillName = null;
+                    currentCategoryId = null;
+                    updateBreadcrumb();
+                    filterUsersBySkill(null);
+                    highlightActive();
+                }
+            }
+        }
+    }
+    
+    function selectSubcategory(categoryId, subcategoryId, subcategoryName) {
+        currentCategoryId = categoryId;
+        currentSubcategoryId = subcategoryId;
+        currentSkillName = subcategoryName;
+        
+        updateBreadcrumb();
+        filterUsersBySkill(subcategoryId);
+        highlightActive();
+        
+        // Раскрываем выбранную категорию
+        const catElement = document.querySelector(`.category-item[data-category-id="${categoryId}"]`);
+        if (catElement) {
+            catElement.classList.add("expanded");
+        }
+    }
+    
+    function highlightActive() {
+        // Обновляем активные классы
+        document.querySelectorAll(".category-item").forEach(el => {
+            const catId = el.dataset.categoryId;
+            if (currentCategoryId === catId && !currentSubcategoryId) {
+                el.classList.add("active");
+            } else {
+                el.classList.remove("active");
+            }
+        });
+        
+        document.querySelectorAll(".subcategory-item").forEach(el => {
+            const subId = el.dataset.subcategoryId;
+            if (currentSubcategoryId === subId) {
+                el.classList.add("active");
+            } else {
+                el.classList.remove("active");
+            }
+        });
+    }
+    
+    function updateBreadcrumb() {
+        const breadcrumb = document.getElementById("breadcrumb");
+        if (currentSubcategoryId && currentSkillName) {
+            breadcrumb.innerHTML = `📁 <span>${currentSkillName}</span> — специалисты, предлагающие этот навык`;
+        } else {
+            breadcrumb.innerHTML = `📁 <span>Все навыки</span> — выберите категорию или подкатегорию`;
+        }
+    }
+    
+    // Фильтрация пользователей по выбранной подкатегории (навыку)
+    function filterUsersBySkill(subcategoryId) {
+        let filteredUsers = [];
+        
+        if (!subcategoryId) {
+            filteredUsers = users;
+        } else {
+            // Находим подкатегорию и её навыки
+            let targetSkills = [];
+            for (let cat of categories) {
+                const sub = cat.subcategories.find(s => s.id === subcategoryId);
+                if (sub) {
+                    targetSkills = sub.skills;
+                    break;
+                }
+            }
+            
+            // Фильтруем пользователей, у которых есть хотя бы один из навыков этой подкатегории
+            filteredUsers = users.filter(user => 
+                user.skills.some(skill => targetSkills.some(ts => 
+                    skill.toLowerCase().includes(ts.toLowerCase()) || 
+                    ts.toLowerCase().includes(skill.toLowerCase())
+                ))
+            );
+        }
+        
+        renderUsers(filteredUsers);
+    }
+    
+    // Рендер карточек пользователей
+    function renderUsers(usersToShow) {
+        const container = document.getElementById("usersGrid");
+        const countSpan = document.querySelector("#resultsCount span");
+        countSpan.textContent = usersToShow.length;
+        
+        if (usersToShow.length === 0) {
+            container.innerHTML = `<div class="empty-state">👥 Нет специалистов с выбранным навыком</div>`;
+            return;
+        }
+        
+        container.innerHTML = usersToShow.map(user => {
+            const fullStars = Math.floor(user.rating);
+            const halfStar = user.rating % 1 >= 0.5;
+            let starsHtml = "★".repeat(fullStars);
+            if (halfStar) starsHtml += "½";
+            starsHtml += "☆".repeat(5 - Math.ceil(user.rating));
+            
+            return `
+                <div class="user-card" data-user-id="${user.id}">
+                    <div class="card-header">
+                        <div class="user-avatar">${user.avatar}</div>
+                        <div class="user-info">
+                            <h3>${user.name}</h3>
+                            <div class="user-city">📍 ${user.city}</div>
+                            <div class="rating">
+                                <span class="stars">${starsHtml}</span>
+                                <span class="rating-value">${user.rating} (${user.reviews} отзывов)</span>
+                            </div>
+                            <div class="online-badge ${user.online ? 'online' : 'offline'}">
+                                ${user.online ? '🟢 Онлайн' : '⚫ Офлайн'}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skills-section">
+                        <div class="skills-label">🏆 Навыки:</div>
+                        <div class="skills-list">
+                            ${user.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn-offer" data-id="${user.id}" data-name="${user.name}">💬 Предложить обмен</button>
+                        <button class="btn-profile" data-id="${user.id}">👤 Профиль</button>
+                    </div>
+                </div>
+            `;
+        }).join("");
+        
+        // Обработчики
+        document.querySelectorAll(".btn-offer").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const userId = parseInt(btn.dataset.id);
+                const userName = btn.dataset.name;
+                offerExchange(userId, userName);
+            });
+        });
+        
+        document.querySelectorAll(".btn-profile").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const userId = parseInt(btn.dataset.id);
+                viewProfile(userId);
+            });
+        });
+    }
+    
+    function offerExchange(userId, userName) {
+        const message = prompt(`Напишите сообщение для ${userName} (что вы предлагаете в обмен):`);
+        if (message) {
+            alert(`✅ Запрос отправлен пользователю ${userName}!\nВаше сообщение: "${message}"`);
+        }
+    }
+    
+    function viewProfile(userId) {
+        const user = users.find(u => u.id === userId);
+        if (user) {
+            alert(`👤 Профиль пользователя ${user.name}\n📍 ${user.city}\n⭐ Рейтинг: ${user.rating}\n🎯 Навыки: ${user.skills.join(", ")}`);
+        }
+    }
+    
+    // По умолчанию разворачиваем первую категорию
+    function expandFirstCategory() {
+        if (categories.length > 0) {
+            const firstCatElement = document.querySelector(`.category-item[data-category-id="${categories[0].id}"]`);
+            if (firstCatElement) {
+                firstCatElement.classList.add("expanded");
+            }
+        }
+    }
+    
+    // Инициализация
+    renderCategories();
+    expandFirstCategory();
+    renderUsers(users);
+</script>
+</body>
+</html>
