@@ -9,8 +9,10 @@
 <body>
 
 <header class="header">
-    <div class="header-content">
-        <a href="index.html" class="logo">✨ SkillSwap</a>
+    <div class="header-content">reading
+        <a href="index.html" class="logo">
+            <div class="logo"><img src="../icons/logo.png" alt="логотип" width="60px" height="100%">Короче, научи</div>
+        </a>
         <div class="header-right">
             <div class="user-info">
                 <div class="avatar-sm">А</div>
@@ -24,17 +26,17 @@
 <!-- Верхнее меню: Профиль / Мои сделки / Запросы / История -->
 <div class="top-menu">
     <div class="menu-items">
-        <a href="#" class="menu-item active" data-tab="dashboard">📊 Профиль</a>
-        <a href="#" class="menu-item" data-tab="deals">🔄 Мои сделки</a>
-        <a href="#" class="menu-item" data-tab="requests">📨 Запросы</a>
-        <a href="#" class="menu-item" data-tab="history">📜 История</a>
+        <a href="#" class="menu-item active" data-tab="dashboard"><img src="../icons/login_profile.png" alt="профиль" width="50px" height="100%">Профиль</a>
+        <a href="#" class="menu-item" data-tab="deals"><img src="../icons/exchange.png" alt="профиль" width="50px" height="100%">Мои сделки</a>
+        <a href="#" class="menu-item" data-tab="requests"><img src="../icons/envelope.png" alt="запросы" width="50px" height="100%">Запросы</a>
+        <a href="#" class="menu-item" data-tab="history"><img src="../icons/homework.png" alt="история" width="50px" height="100%">История</a>
     </div>
 </div>
 
 <main class="container">
     <!-- Приветствие -->
     <div class="welcome-section">
-        <h1>Добро пожаловать, <span id="welcomeName">Анна</span> 👋</h1>
+        <h1>Добро пожаловать, <span id="welcomeName">Анна</span><img src="../icons/excellence.png" alt="история" width="50px" height="100%"></h1>
         <p>Ваша личная статистика и активность на платформе</p>
     </div>
 
@@ -44,7 +46,7 @@
             <!-- Виджет: Активные сделки -->
             <div class="widget">
                 <div class="widget-header">
-                    <h3>🔄 Активные сделки</h3>
+                    <h3><img src="../icons/exchange.png" alt="профиль" width="50px" height="100%">Активные сделки</h3>
                     <span class="count" id="activeDealsCount">2</span>
                 </div>
                 <div class="widget-body" id="activeDealsList">
@@ -55,7 +57,7 @@
             <!-- Виджет: Входящие запросы на обмен -->
             <div class="widget">
                 <div class="widget-header">
-                    <h3>📨 Входящие запросы</h3>
+                    <h3><img src="../icons/envelope.png" alt="запросы" width="50px" height="100%">Входящие запросы</h3>
                     <span class="count" id="incomingRequestsCount">3</span>
                 </div>
                 <div class="widget-body" id="incomingRequestsList">
@@ -66,22 +68,22 @@
             <!-- Виджет: Мои навыки -->
             <div class="widget">
                 <div class="widget-header">
-                    <h3>🧠 Мои навыки</h3>
+                    <h3><img src="../icons/skills.png" alt="навыки" width="50px" height="100%">Мои навыки</h3>
                 </div>
                 <div class="widget-body">
                     <div class="skills-list" id="mySkillsList">
                         <!-- динамически -->
                     </div>
-                    <button class="btn-outline-small" id="editSkillsBtn" style="width: 100%; margin-top: 8px;">✏️ Редактировать навыки</button>
+                    <button class="btn-outline-small" id="editSkillsBtn" style="width: 100%; margin-top: 8px;"><img src="../icons/edit.png" alt="редакт навыки" width="50px" height="100%">Редактировать навыки</button>
                 </div>
             </div>
         </div>
 
         <!-- Быстрый переход в каталог -->
         <div class="quick-action">
-            <h3>🔍 Найдите новые возможности</h3>
+            <h3><img src="../icons/search.png" alt="поиск" width="50px" height="100%">Найдите новые возможности</h3>
             <p>Тысячи пользователей ждут обмена навыками. Начните прямо сейчас!</p>
-            <button class="btn-catalog" id="goToCatalogBtn">Перейти в каталог навыков →</button>
+            <button class="btn-catalog" id="goToCatalogBtn">Перейти в каталог навыков</button>
         </div>
     </div>
 
@@ -282,7 +284,7 @@
     function acceptRequest(id) {
         const request = currentUser.incomingRequests.find(r => r.id === id);
         if (request) {
-            alert(`✅ Вы приняли запрос от ${request.from}. Свяжитесь для деталей обмена.`);
+            alert(`Вы приняли запрос от ${request.from}. Свяжитесь для деталей обмена.`);
             currentUser.incomingRequests = currentUser.incomingRequests.filter(r => r.id !== id);
             saveUserData();
             updateAllWidgets();
@@ -292,7 +294,7 @@
     function rejectRequest(id) {
         const request = currentUser.incomingRequests.find(r => r.id === id);
         if (request) {
-            alert(`❌ Вы отклонили запрос от ${request.from}.`);
+            alert(`Вы отклонили запрос от ${request.from}.`);
             currentUser.incomingRequests = currentUser.incomingRequests.filter(r => r.id !== id);
             saveUserData();
             updateAllWidgets();
@@ -311,7 +313,7 @@
     
     // Переход в каталог
     document.getElementById('goToCatalogBtn')?.addEventListener('click', () => {
-        alert('📚 Переход в каталог навыков (файл catalog.html будет создан)');
+        alert('Переход в каталог навыков (файл catalog.html будет создан)');
         // window.location.href = 'catalog.html';
     });
     
