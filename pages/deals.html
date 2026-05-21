@@ -11,14 +11,14 @@
 
 <header class="header">
     <div class="header-content">
-        <a href="cabinet.html" class="logo">✨ SkillSwap</a>
-        <a href="cabinet.html" class="back-link">← Вернуться в профиль</a>
+        <a href="cabinet.html" class="logo"><img src="../icons/logo.png" alt="логотип" width="60px" height="100%">Короче, научи</a>
+        <a href="cabinet.html" class="back-link"><img src="../icons/login_profile.png" alt="профиль" width="60px" height="100%">Вернуться в профиль</a>
     </div>
 </header>
 
 <main class="container">
     <div class="page-header">
-        <h1>🔄 Мои сделки</h1>
+        <h1><img src="../icons/lexchange.png" alt="профиль" width="50px" height="100%">Мои сделки</h1>
         <p>Управляйте активными обменами и просматривайте историю</p>
     </div>
 
@@ -41,21 +41,21 @@
 </footer>
 
 <!-- Модалка чата -->
-<div id="chatModal" class="modal-overlay">
+<!--<div id="chatModal" class="modal-overlay">
     <div class="chat-modal">
         <div class="chat-header">
-            <h3>💬 Чат с <span id="chatPartnerName"></span></h3>
+            <h3>Чат с <span id="chatPartnerName"></span></h3>
             <button class="close-chat" id="closeChatBtn">&times;</button>
         </div>
         <div class="chat-messages" id="chatMessages">
             <!-- сообщения -->
-        </div>
+       <!--  </div>
         <div class="chat-input-area">
             <input type="text" class="chat-input" id="chatInput" placeholder="Напишите сообщение...">
             <button class="chat-send" id="sendMessageBtn">→</button>
         </div>
     </div>
-</div>
+</div>-->
 
 <script>
     // ========== ДЕМО-ДАННЫЕ СДЕЛОК ==========
@@ -151,7 +151,7 @@
         }
         
         if (filtered.length === 0) {
-            container.innerHTML = `<div class="empty-state">📭 В этой категории нет сделок</div>`;
+            container.innerHTML = `<div class="empty-state"><img src="../icons/envelope.png" alt="знак" width="50px" height="100%"> В этой категории нет сделок</div>`;
             return;
         }
         
@@ -194,13 +194,13 @@
                             </div>
                         </div>
                         <div class="deal-date">
-                            📅 ${deal.date}
-                            ${deal.deadline ? ` • ⏰ ${deal.deadline}` : ''}
+                            <img src="../icons/timetable.png" alt="знак" width="50px" height="100%">${deal.date}
+                            ${deal.deadline ? ` <img src="../icons/alarm.png" alt="знак" width="50px" height="100%"> ${deal.deadline}` : ''}
                         </div>
                     </div>
                     <div class="deal-footer">
-                        <button class="btn-details" data-id="${deal.id}">💬 Подробнее / Чат</button>
-                        ${deal.status === "active" ? `<button class="btn-cancel" data-cancel="${deal.id}">✕ Отменить</button>` : ''}
+                        <button class="btn-details" data-id="${deal.id}">Подробнее / Чат</button>
+                        ${deal.status === "active" ? `<button class="btn-cancel" data-cancel="${deal.id}">Отменить</button>` : ''}
                     </div>
                 </div>
             `;
@@ -297,7 +297,7 @@
         setTimeout(() => {
             if (currentDealId) {
                 const replyMsg = {
-                    text: "Спасибо! Скоро отвечу 👍",
+                    text: "Спасибо! Скоро отвечу)",
                     sender: "partner",
                     time: getCurrentTime()
                 };
